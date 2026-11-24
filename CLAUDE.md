@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `xtb-brief.pdf` — client brief (source of truth for requirements).
 - `PLAN.md` — build plan: blockers/workarounds (B1–B14), inputs checklist, phases, verification steps. Read it before store or theme work.
 
-Most of the project is **store configuration + apps** (Shopify Flow, Locksmith, bulk gift card app, Shopify Payments), not theme code. Theme work is a reskin.
+Most of the project is **store configuration + apps** (Shopify Flow, bulk gift card app, Shopify Payments), not theme code. Theme work is a reskin plus a Liquid access gate (no Locksmith).
 
 ### Confirmed decisions (override the brief where they differ)
 - Carts may exceed the voucher value; employee pays the difference via Shopify Payments (client sign-off pending).
@@ -59,3 +59,4 @@ Pull upstream Horizon updates: `git remote add upstream https://github.com/Shopi
 - **Money in JS**: `assets/money-formatting.js` replicates the Liquid `money` filter using `shop.money_format`, so the "XTB Coins" format applies to client-rendered prices without patching.
 - **Storefront copy** (e.g. "Taxes and shipping calculated at checkout") lives in `locales/en.default.json`; schema/editor labels are in `locales/*.schema.json`.
 - Relevant spots for this project: `blocks/accelerated-checkout.liquid` (Shop Pay / dynamic checkout buttons — remove), `templates/gift_card.liquid` + `assets/template-giftcard.css` (voucher page), `sections/footer*.liquid` (MerchUp footer), `layout/theme.liquid` (global head/body).
+- **Access gate**: `layout/theme.liquid` captures `snippets/store-access.liquid` (`granted` / `pending` / `denied` / `guest`) and, unless granted, renders only `snippets/store-access-gate.liquid` + the footer group. Access = signed-in customer with the `access_tag` theme setting (Flow adds it by email domain). Theme editor and policy pages bypass it. It gates HTML only — JSON/`.js` endpoints, Section Rendering API and `/cart/add` are not protected.

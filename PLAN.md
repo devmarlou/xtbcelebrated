@@ -22,9 +22,9 @@ Decisions confirmed with you (2026-11-25):
 | B6 | Markets / local currency | Turning on Shopify Payments can auto-enable local currencies. A German employee would then see EUR, which breaks the Coins = USD mapping. | Create one market covering all countries, **USD only, local currencies off**, no country-specific price adjustments. |
 | B7 | Payment for the difference | With overage allowed, a real payment provider is needed. | Enable **Shopify Payments** (MerchUp entity, Poland is supported) or another gateway. Check that a USD store with PLN payout works (conversion fees). Turn off manual payment methods. Gift card + card split payment is native. |
 | B8 | Tax/duties | Tax added on top makes the voucher fall short. | Turn tax collection off in every region and turn duties/import taxes off (DDP is handled by MerchUp logistics). **Accountant sign-off.** |
-| B9 | Branded login page | Brief: a fully branded login page with a centred form and the MerchUp footer. **New (passwordless) customer accounts are Shopify-hosted.** Branding is limited to logo, colours and background through the checkout & accounts editor, and there is **no custom footer or layout**. Legacy accounts are deprecated, so avoid them. | Two-layer approach: (1) a **Locksmith "locked" landing page** rendered by the theme, fully on-brand (red, cream, logo, pill, MerchUp footer) with a centred **"Sign in with your XTB email"** CTA; (2) the Shopify-hosted OTP page branded as far as the editor allows. Tell the client the OTP screen itself can't carry the footer. |
-| B10 | Tagging timing | Flow tags the customer asynchronously after the account is created, so the first page load after the first login can be denied. | Check whether Locksmith can key on **email domain** directly (wildcard `*@xtb.com`, …). If so, use it as the primary key and keep Flow tagging for reporting. Otherwise, the locked page shows "Verifying… refresh in a few seconds" with an auto-reload. |
-| B11 | Leak via channels/endpoints | Shop app, Google and `products.json` can expose the catalogue. | Remove the Shop/Google/Facebook sales channels, Online Store only. Turn on noindex for the theme. Locksmith hides content from search. JSON endpoints are a low-risk leak: accept it (prices are in coins and there's nothing sensitive). |
+| B9 | Branded login page | Brief: a fully branded login page with a centred form and the MerchUp footer. **New (passwordless) customer accounts are Shopify-hosted**: only logo/colours/background can be branded, no custom footer. | **Decided: no Locksmith.** A Liquid gate in `layout/theme.liquid` (`snippets/store-access.liquid` + `store-access-gate.liquid`) shows a branded sign-in page (red, cream, pill, MerchUp footer) to anyone without the `xtb-verified` tag. The Shopify-hosted code screen is branded via the checkout & accounts editor. |
+| B10 | Tagging timing | Flow tags the customer a few seconds after the account is created. | The gate shows "Verifying your account…" with auto-refresh when a signed-in customer has an allowed email domain but no tag yet. |
+| B11 | Leak via channels/endpoints | Shop app, Google and `products.json` can expose the catalogue. | Remove the Shop/Google/Facebook sales channels, Online Store only. Turn on noindex for the theme. The Liquid gate covers HTML pages only: `/products.json`, `/products/<handle>.js`, the Section Rendering API and `/cart/add` are not gated, so a non-employee could still buy with a card. Mitigation: Flow on order created flags/cancels orders from customers without the tag. JSON endpoints are a low-risk leak: accept it (prices are in coins and there's nothing sensitive). |
 | B12 | View-only XTB staff | Grow plan = **5 staff accounts**. | Use granular permissions (view orders, products, inventory). Agency people use collaborator accounts, which don't count against the limit. If XTB needs more than about 3 seats, flag it. |
 | B13 | Login footer + "lands on listing" | After login, the return URL defaults to the account page. | Sign-in CTA uses `?return_url=/collections/all`. Homepage = product grid, so the root URL is the listing anyway. |
 | B14 | Fonts | The card uses a geometric sans plus a hand-drawn display face ("CHEERS!"), which may not be in the Shopify font library. | Ask the client for the font files and licence. Self-host via `@font-face` in theme assets. Fallback: closest Shopify library fonts. |
@@ -49,7 +49,7 @@ Decisions confirmed with you (2026-11-25):
 **Phase 0 – Spikes (do first, ~½ day, on the real store or a dev store)**
 1. B1: Flow → `giftCardDeactivate` with a real gift-card order. Confirm `receiptJson.gift_card_id` is available in Flow.
 2. Split payment (gift card + card) with Shopify Payments in test mode. Check that the storefront shows coins and checkout shows `$`.
-3. Locksmith + new customer accounts: email-domain key vs tag key, and first-login timing (B10).
+3. Liquid gate + new customer accounts: first sign-in, tag timing (B10), non-XTB email sees the denied screen.
 4. Compare cost of the gift card apps (BatchCard / Datora / Matrixify) for code + expiry export.
 
 **Phase 1 – Store settings**
@@ -62,7 +62,7 @@ Decisions confirmed with you (2026-11-25):
 
 **Phase 2 – Access**
 - Flow: *Customer created* → email ends with one of the 16 domains → add tag `xtb-verified`.
-- Locksmith: lock the entire store. Key = tag `xtb-verified` (and/or email-domain key). Locked page = custom branded section (B9). Exceptions: the How-to-order page stays locked, and policies stay public.
+- Theme: Liquid gate (done). Settings → Store access: tag, allowed domains, sign-in copy. Optional Flow: order created → customer lacks tag → tag order `unverified` + hold/cancel.
 
 **Phase 3 – Vouchers**
 - Install the chosen bulk app. Generate batch 1 (50 cards, `expiresOn` = issue + 1y). Export the CSV with full codes.
@@ -76,7 +76,7 @@ Decisions confirmed with you (2026-11-25):
 - Header: logo (cream version), links = Products, How to order, Account. No search or currency/country selector.
 - Homepage (`templates/index.json`) = brand hero (short "Thank you! Keep setting the High Bar." band + "we are xtb" pill) + product grid. Or redirect to `/collections/all`.
 - Product/collection/cart: hide dynamic checkout buttons. Cart note text: "Enter your voucher code at checkout". Remove "taxes/shipping calculated" copy.
-- Footer group (`sections/footer-group.json`): "This store is operated by [MerchUp](https://www.merchup.com)" with `target="_blank" rel="noopener"`, on every page including the Locksmith locked page.
+- Footer group (`sections/footer-group.json`): "This store is operated by [MerchUp](https://www.merchup.com)" with `target="_blank" rel="noopener"`, on every page including the access gate page.
 - Pages: `templates/page.how-to-order.json` (steps + screenshot of the checkout gift card field + 1 coin = $1 note).
 - `templates/gift_card.liquid` restyled.
 - (Checked: Horizon JS money formatting follows `shop.money_format`, so no JS patch is needed for B5.)
