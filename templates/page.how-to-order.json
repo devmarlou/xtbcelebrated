@@ -1,0 +1,67 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "blocks": {
+        "heading": {
+          "type": "text",
+          "name": "t:names.title",
+          "settings": {
+            "text": "<h1>{{ closest.page.title }}</h1>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h2"
+          },
+          "blocks": {}
+        },
+        "pill": {
+          "type": "brand-pill",
+          "settings": {
+            "text": "1 XTB Coin = $1",
+            "font_size": 1,
+            "alignment": "left"
+          },
+          "blocks": {}
+        },
+        "steps": {
+          "type": "text",
+          "name": "Steps",
+          "settings": {
+            "text": "<ol><li><strong>Sign in</strong> with your XTB work email. We send you a one-time code, so there is no password to remember.</li><li><strong>Pick your swag.</strong> Choose a product, size and colour, and add it to your cart. Prices are shown in XTB Coins.</li><li><strong>Go to checkout</strong> and enter your delivery address. Shipping is free, worldwide.</li><li><strong>Enter your voucher code</strong> in the <em>Discount code or gift card</em> field and click <em>Apply</em>.</li><li><strong>Place your order.</strong> You will get an order confirmation by email, and a shipping notice once it is on its way.</li></ol>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "rte"
+          },
+          "blocks": {}
+        },
+        "notes": {
+          "type": "text",
+          "name": "Good to know",
+          "settings": {
+            "text": "<h3>Good to know</h3><ul><li>Checkout shows prices in US dollars: <strong>1 XTB Coin = $1</strong>.</li><li>Your voucher works <strong>once</strong>. Any value you don't use in that order is lost, so make the most of it.</li><li>If your cart costs more than your voucher, checkout asks you to pay the difference by card.</li><li>Vouchers are valid for 1 year from the day you receive them.</li></ul>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "rte"
+          },
+          "blocks": {}
+        },
+        "page-content": {
+          "type": "page-content",
+          "settings": {},
+          "blocks": {}
+        }
+      },
+      "block_order": ["heading", "pill", "steps", "notes", "page-content"],
+      "settings": {
+        "content_direction": "column",
+        "gap": 32,
+        "padding-block-start": 40,
+        "padding-block-end": 80
+      }
+    }
+  },
+  "order": ["main"]
+}
