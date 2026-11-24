@@ -1,0 +1,35 @@
+{%- doc -%}
+  Renders the black "we are xtb" pill badge with sparkle accents from the brand card.
+
+  @param {string} [text] - Pill label (defaults to "we are xtb")
+  @param {string} [class] - Extra CSS class for the wrapper
+
+  @example
+  {% render 'brand-pill', text: 'we are xtb' %}
+{%- enddoc -%}
+
+<span class="brand-pill {{ class }}">
+  {%- render 'brand-sparkle' -%}
+  <span class="brand-pill__text">{{ text | default: 'we are xtb' | escape }}</span>
+  {%- render 'brand-sparkle' -%}
+</span>
+
+{%- stylesheet -%}
+  .brand-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    padding: 0.55em 1.2em;
+    border-radius: 999px;
+    background: var(--brand-pill-background, var(--color-primary-button-background));
+    color: var(--brand-pill-text, var(--color-primary-button-text));
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .brand-pill .brand-sparkle {
+    color: var(--brand-sparkle-color, var(--color-background));
+    font-size: 0.9em;
+  }
+{%- endstylesheet -%}
