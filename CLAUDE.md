@@ -34,6 +34,8 @@ Red background `#C20100`, cream text `#FEF7E0`, black pill accent `#070809`; pla
 
 ## Commands
 
+Store: `xtbcelebrated-pmfbmesf.myshopify.com` (partner dev store). Work theme: **XTBCelebrated (dev)**, id `202478485848` (unpublished). Never push to the live theme. The Shopify MCP connector is read-only (no mutations, gift card writes blocked); store settings are changed by the user in the admin.
+
 No build step, no package manager, no test suite — files are served as-is by Shopify. Requires [Shopify CLI](https://shopify.dev/docs/storefronts/themes/tools/cli).
 
 ```sh
