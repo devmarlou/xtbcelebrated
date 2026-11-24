@@ -1,0 +1,37 @@
+{%- doc -%}
+  Decides whether the current visitor may see the closed store. Outputs one word, so capture it:
+
+  - `granted`  signed-in customer with the access tag (or the theme editor, or a public page)
+  - `pending`  signed in with an allowed email domain, waiting for Flow to add the tag
+  - `denied`   signed in with any other email
+  - `guest`    not signed in
+
+  Settings: `access_enabled`, `access_tag`, `access_domains` (theme settings → Store access).
+
+  @example
+  {%- capture store_access -%}{%- render 'store-access' -%}{%- endcapture -%}
+{%- enddoc -%}
+
+{%- liquid
+  assign access = 'granted'
+
+  if settings.access_enabled and request.design_mode == false and request.page_type != 'policy'
+    if customer == null
+      assign access = 'guest'
+    elsif customer.tags contains settings.access_tag
+      assign access = 'granted'
+    else
+      assign access = 'denied'
+      assign email_domain = customer.email | split: '@' | last | downcase | strip
+      assign allowed_domains = settings.access_domains | downcase | replace: ',', ' ' | strip_newlines | split: ' '
+      for domain in allowed_domains
+        if domain != blank and domain == email_domain
+          assign access = 'pending'
+          break
+        endif
+      endfor
+    endif
+  endif
+
+  echo access
+-%}

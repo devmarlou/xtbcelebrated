@@ -93,7 +93,12 @@
     "palette_input_text": "{{ settings.color_palette.color1 }}",
     "badge_sale_background_color": "{{ settings.color_palette.color1 }}",
     "badge_sale_text_color": "{{ settings.color_palette.foreground }}",
-    "badge_sold_out_text_color": "{{ settings.color_palette.foreground }}"
+    "badge_sold_out_text_color": "{{ settings.color_palette.foreground }}",
+    "access_enabled": true,
+    "access_tag": "xtb-verified",
+    "access_domains": "xtb.com xhub.pro xtb.ae xtb.cl xtb.cz xtb.de xtb.es xtb.fr xtb.hu xtb.it xtb.id xtb.pl xtb.pt xtb.ro xtb.sk xtb.global",
+    "access_heading": "Welcome to XTBCelebrated",
+    "access_text": "Sign in with your XTB work email to pick your anniversary gift."
   },
   "presets": {
     "Default": {

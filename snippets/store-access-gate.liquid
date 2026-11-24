@@ -1,0 +1,96 @@
+{%- doc -%}
+  Branded full-page gate shown instead of the store to visitors without access.
+
+  @param {string} state - Result of the `store-access` snippet: `guest`, `pending` or `denied`
+{%- enddoc -%}
+
+{%- liquid
+  assign return_path = routes.collections_url | append: '/all'
+  if routes.account_login_url contains '?'
+    assign login_url = routes.account_login_url | append: '&return_url=' | append: return_path
+  else
+    assign login_url = routes.account_login_url | append: '?return_url=' | append: return_path
+  endif
+-%}
+
+<section class="access-gate" aria-labelledby="AccessGateHeading">
+  <div class="access-gate__inner">
+    {%- if settings.logo_inverse != blank or settings.logo != blank -%}
+      {%- assign gate_logo = settings.logo_inverse | default: settings.logo -%}
+      {{
+        gate_logo
+        | image_url: width: 600
+        | image_tag: class: 'access-gate__logo', alt: shop.name, loading: 'eager', widths: '200, 300, 400, 600'
+      }}
+    {%- else -%}
+      <p class="access-gate__wordmark">{{ shop.name }}</p>
+    {%- endif -%}
+
+    {%- case state -%}
+      {%- when 'pending' -%}
+        <h1 id="AccessGateHeading" class="access-gate__heading">Verifying your account…</h1>
+        <p class="access-gate__text">This takes a few seconds. The page refreshes by itself.</p>
+        <script>
+          setTimeout(() => window.location.reload(), 4000);
+        </script>
+
+      {%- when 'denied' -%}
+        <h1 id="AccessGateHeading" class="access-gate__heading">This store is for XTB employees</h1>
+        <p class="access-gate__text">
+          You are signed in as <strong>{{ customer.email | escape }}</strong>. Please sign in with your XTB work email instead.
+        </p>
+        <a class="button access-gate__button" href="{{ routes.account_logout_url }}">Sign out</a>
+
+      {%- else -%}
+        <h1 id="AccessGateHeading" class="access-gate__heading">{{ settings.access_heading }}</h1>
+        <p class="access-gate__text">{{ settings.access_text }}</p>
+        <a class="button access-gate__button" href="{{ login_url }}">Sign in with your XTB email</a>
+    {%- endcase -%}
+
+    {%- render 'brand-pill', class: 'access-gate__pill' -%}
+  </div>
+</section>
+
+{%- stylesheet -%}
+  .access-gate {
+    display: grid;
+    place-items: center;
+    min-height: 80svh;
+    padding: 64px 16px;
+    background: var(--color-background);
+    color: var(--color-foreground);
+    text-align: center;
+  }
+
+  .access-gate__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    max-width: 34rem;
+  }
+
+  .access-gate__logo {
+    width: min(280px, 70vw);
+    height: auto;
+  }
+
+  .access-gate__wordmark {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .access-gate__heading {
+    margin: 0;
+  }
+
+  .access-gate__text {
+    margin: 0;
+    font-size: 1.125rem;
+  }
+
+  .access-gate__pill {
+    margin-top: 16px;
+  }
+{%- endstylesheet -%}

@@ -8,6 +8,46 @@
     "theme_support_url": "https://support.shopify.com/"
   },
   {
+    "name": "Store access",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Only signed-in customers with the access tag can see the store. Shopify Flow adds the tag to customers whose email is in an allowed domain."
+      },
+      {
+        "type": "checkbox",
+        "id": "access_enabled",
+        "label": "Lock store to tagged customers",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "access_tag",
+        "label": "Access tag",
+        "default": "xtb-verified"
+      },
+      {
+        "type": "textarea",
+        "id": "access_domains",
+        "label": "Allowed email domains",
+        "info": "Separate with spaces, commas or new lines. Used to show \"Verifying…\" while Flow adds the tag. Keep in sync with the Flow workflow.",
+        "default": "xtb.com xhub.pro xtb.ae xtb.cl xtb.cz xtb.de xtb.es xtb.fr xtb.hu xtb.it xtb.id xtb.pl xtb.pt xtb.ro xtb.sk xtb.global"
+      },
+      {
+        "type": "text",
+        "id": "access_heading",
+        "label": "Sign-in heading",
+        "default": "Welcome to XTBCelebrated"
+      },
+      {
+        "type": "textarea",
+        "id": "access_text",
+        "label": "Sign-in text",
+        "default": "Sign in with your XTB work email to pick your anniversary gift."
+      }
+    ]
+  },
+  {
     "name": "t:names.logo_and_favicon",
     "settings": [
       {
