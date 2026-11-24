@@ -24,7 +24,7 @@
         "type": "text",
         "id": "access_tag",
         "label": "Access tag",
-        "default": "xtb-verified"
+        "default": "xtb-access"
       },
       {
         "type": "textarea",

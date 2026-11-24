@@ -22,7 +22,7 @@ Decisions confirmed with you (2026-11-25):
 | B6 | Markets / local currency | Turning on Shopify Payments can auto-enable local currencies. A German employee would then see EUR, which breaks the Coins = USD mapping. | Create one market covering all countries, **USD only, local currencies off**, no country-specific price adjustments. |
 | B7 | Payment for the difference | With overage allowed, a real payment provider is needed. | Enable **Shopify Payments** (MerchUp entity, Poland is supported) or another gateway. Check that a USD store with PLN payout works (conversion fees). Turn off manual payment methods. Gift card + card split payment is native. |
 | B8 | Tax/duties | Tax added on top makes the voucher fall short. | Turn tax collection off in every region and turn duties/import taxes off (DDP is handled by MerchUp logistics). **Accountant sign-off.** |
-| B9 | Branded login page | Brief: a fully branded login page with a centred form and the MerchUp footer. **New (passwordless) customer accounts are Shopify-hosted**: only logo/colours/background can be branded, no custom footer. | **Decided: no Locksmith.** A Liquid gate in `layout/theme.liquid` (`snippets/store-access.liquid` + `store-access-gate.liquid`) shows a branded sign-in page (red, cream, pill, MerchUp footer) to anyone without the `xtb-verified` tag. The Shopify-hosted code screen is branded via the checkout & accounts editor. |
+| B9 | Branded login page | Brief: a fully branded login page with a centred form and the MerchUp footer. **New (passwordless) customer accounts are Shopify-hosted**: only logo/colours/background can be branded, no custom footer. | **Decided: no Locksmith.** A Liquid gate in `layout/theme.liquid` (`snippets/store-access.liquid` + `store-access-gate.liquid`) shows a branded sign-in page (red, cream, pill, MerchUp footer) to anyone without the `xtb-access` tag. The Shopify-hosted code screen is branded via the checkout & accounts editor. |
 | B10 | Tagging timing | Flow tags the customer a few seconds after the account is created. | The gate shows "Verifying your account…" with auto-refresh when a signed-in customer has an allowed email domain but no tag yet. |
 | B11 | Leak via channels/endpoints | Shop app, Google and `products.json` can expose the catalogue. | Remove the Shop/Google/Facebook sales channels, Online Store only. Turn on noindex for the theme. The Liquid gate covers HTML pages only: `/products.json`, `/products/<handle>.js`, the Section Rendering API and `/cart/add` are not gated, so a non-employee could still buy with a card. Mitigation: Flow on order created flags/cancels orders from customers without the tag. JSON endpoints are a low-risk leak: accept it (prices are in coins and there's nothing sensitive). |
 | B12 | View-only XTB staff | Grow plan = **5 staff accounts**. | Use granular permissions (view orders, products, inventory). Agency people use collaborator accounts, which don't count against the limit. If XTB needs more than about 3 seats, flag it. |
@@ -61,7 +61,7 @@ Decisions confirmed with you (2026-11-25):
 - Staff: view-only permission template for XTB.
 
 **Phase 2 – Access**
-- Flow: *Customer created* → email ends with one of the 16 domains → add tag `xtb-verified`.
+- Flow: *Customer created* → email ends with one of the 16 domains → add tag `xtb-access`.
 - Theme: Liquid gate (done). Settings → Store access: tag, allowed domains, sign-in copy. Optional Flow: order created → customer lacks tag → tag order `unverified` + hold/cancel.
 
 **Phase 3 – Vouchers**
