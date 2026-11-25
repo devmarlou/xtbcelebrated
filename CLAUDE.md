@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-**XTBCelebrated** — a closed, English-only Shopify store (Grow plan) where XTB employees redeem a single-use gift card ("voucher") for merch. Built by us as subcontractor for MerchUp. The repo is Shopify's **Horizon** theme (cloned from `https://github.com/Shopify/horizon.git`, git `origin` still points there) customised for this store.
+**XTBCelebrated** — a closed, English-only Shopify store (Grow plan) where XTB employees redeem a single-use gift card ("voucher") for merch. Built by us as subcontractor for MerchUp. The repo is Shopify's **Horizon** theme (cloned from `https://github.com/Shopify/horizon.git`, remote `upstream`) customised for this store.
 
 - `xtb-brief.pdf` — client brief (source of truth for requirements).
 - `PLAN.md` — build plan: blockers/workarounds (B1–B14), inputs checklist, phases, verification steps. Read it before store or theme work.
@@ -47,7 +47,9 @@ shopify theme pull --only config/settings_data.json --only templates/*.json  # p
 
 JS is type-checked in-editor via `assets/jsconfig.json` (`checkJs`, strict null checks); there is no CLI typecheck script.
 
-Pull upstream Horizon updates: `git remote add upstream https://github.com/Shopify/horizon.git && git pull upstream main` (expect conflicts in customised files).
+Repo: `origin` = https://github.com/devmarlou/xtbcelebrated (private). The remote URL includes `devmarlou@` because this machine also has another GitHub account saved; keep it so pushes use devmarlou.
+
+Pull Horizon updates: `git pull upstream main` (expect conflicts in customised files).
 
 ## Theme architecture (Horizon)
 
