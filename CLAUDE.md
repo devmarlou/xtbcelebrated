@@ -18,7 +18,7 @@ Most of the project is **store configuration + apps** (Shopify Flow, Shopify Pay
 - Prices shown as **"XTB Coins"** (1 coin = 1 USD) via the store money format `{{amount_no_decimals}} XTB Coins`; checkout still shows `$`.
 
 ### Branding
-Red background `#C20100`, cream text `#FEF7E0`, black pill accent `#070809`; playful hand-drawn accents (see card image in the brief). Footer on every page: "This store is operated by MerchUp" with MerchUp linking to https://www.merchup.com in a new tab.
+Cream page `#FEF7E0` with black text `#070809`. Red `#C20100` is the **accent only** (primary buttons, sale badges, pill sparkles), never large backgrounds. Black footer and black "we are xtb" pill; playful hand-drawn accents (see card image in the brief). Footer on every page: "This store is operated by MerchUp" with MerchUp linking to https://www.merchup.com in a new tab.
 
 ## Rules
 

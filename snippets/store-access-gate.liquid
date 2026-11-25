@@ -16,7 +16,7 @@
 <section class="access-gate" aria-labelledby="AccessGateHeading">
   <div class="access-gate__inner">
     {%- if settings.logo_inverse != blank or settings.logo != blank -%}
-      {%- assign gate_logo = settings.logo_inverse | default: settings.logo -%}
+      {%- assign gate_logo = settings.logo | default: settings.logo_inverse -%}
       {{
         gate_logo
         | image_url: width: 600
