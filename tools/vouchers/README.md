@@ -1,44 +1,44 @@
-# Voucher tool
+# Voucher sheet (Google Sheets extension)
 
-Creates XTBCelebrated vouchers (Shopify gift cards) in bulk and saves the full codes to a CSV that XTB distributes. It also has a safety-net sweep that deactivates part-spent cards. There is no monthly app fee and nothing to host: it runs locally with Node 18+.
+A Google Sheet with a **Vouchers** menu that creates XTBCelebrated vouchers (native Shopify gift cards) in bulk. It keeps every full code in the sheet and shows each voucher's live status. There is no app fee and nothing to host. It runs as Apps Script inside the sheet.
 
-Why a script: the Shopify admin creates gift cards one at a time and only ever shows the last 4 characters afterwards. Matrixify does not support gift cards. The Admin API returns the full code once, at creation, and this script writes it straight to the CSV.
+Why: the Shopify admin creates gift cards one at a time and only shows the last 4 characters afterwards. Matrixify does not support gift cards. The Admin API returns the full code once, at creation, and the sheet writes it straight into a row.
+
+| Menu item | What it does |
+|---|---|
+| **Create batch…** | Dialog with value, quantity, expiry (default today + 1 year) and an optional batch name. Each voucher appears as a new row as soon as it exists. About 5 minutes per run (Apps Script limit); if a big batch stops early, it says how many are left to create. |
+| **Refresh status** | Updates Status (`Unused`, `Part used`, `Used`, `Deactivated`, `Expired`) and Balance for every row from Shopify. |
+| **Deactivate part-used vouchers…** | Safety net for the Flow that deactivates a voucher after its order. Lists active, part-spent vouchers, asks for confirmation, and deactivates them. Their remaining balance is forfeited, and this can't be undone. |
+| **Connect store…** | Saves the store and app credentials in Script Properties, not in cells. |
+
+Files: `Code.gs` (logic), `CreateBatch.html` (dialog), `appsscript.json` (manifest: only this sheet, UI, outbound requests).
 
 ## One-time setup
 
-1. **Create the app.** Go to [Dev Dashboard](https://dev.shopify.com/dashboard), choose **Apps**, then **Create app**, and name it "XTBCelebrated vouchers". Use the organisation the store belongs to.
-2. **Set scopes.** Create a version with the access scopes `read_gift_cards` and `write_gift_cards`, then release it.
-3. **Install it.** Install the app on the store and approve the scopes.
-4. **Add credentials.** Under **Settings**, copy the Client ID and Client secret into `tools/vouchers/.env`. This file is gitignored.
+### 1. Shopify app (gives the sheet API access)
+1. Go to [Dev Dashboard](https://dev.shopify.com/dashboard), choose **Apps**, then **Create app**, and name it "XTBCelebrated vouchers". Use the organisation the store belongs to.
+2. Create a version with the scopes `read_gift_cards` and `write_gift_cards`, then release it.
+3. Install the app on the store and approve the scopes.
+4. Under **Settings**, keep the Client ID and Client secret ready for step 2.
 
-   ```sh
-   SHOPIFY_SHOP=xtbcelebrated-pmfbmesf
-   SHOPIFY_CLIENT_ID=...
-   SHOPIFY_CLIENT_SECRET=...
-   ```
+The token request (client credentials grant) only works when the app and the store are in the **same organisation**. If the store moves to the client's own account, create the app again from that account and reconnect.
 
-The token request (client credentials grant) only works when the app and the store are in the **same organisation**. If the store moves to the client's own account, create the app again from that account.
+### 2. Google Sheet
+1. Create a blank Google Sheet, e.g. "XTBCelebrated vouchers". Share it **only** with the people who issue vouchers.
+2. Go to **Extensions** → **Apps Script**.
+3. In **Project Settings** (gear icon), tick **Show "appsscript.json" manifest file in editor**.
+4. Replace the contents of `Code.gs` and `appsscript.json` with the files from this folder. Add an HTML file named `CreateBatch` (the editor adds `.html`) with `CreateBatch.html`. Save.
+5. Reload the sheet. The **Vouchers** menu appears. Choose **Connect store…** and enter:
+   - the store subdomain (`xtbcelebrated-pmfbmesf`)
+   - the Client ID
+   - the Client secret
+6. Approve the Google permissions prompt the first time.
 
-## Create a batch
+The `Vouchers` tab is created on the first batch.
 
-```sh
-node tools/vouchers/vouchers.mjs create --value 100 --count 50
-node tools/vouchers/vouchers.mjs create --value 150 --count 20 --expires 2027-12-31 --note "Batch 2"
-```
+Alternative to copy-paste: [`clasp`](https://github.com/google/clasp) (`clasp create --type sheets`, then `clasp push` from this folder).
 
-- `--value` is in the store currency (USD, where 1 XTB Coin = $1).
-- `--expires` defaults to today + 1 year (YYYY-MM-DD).
-- Output goes to `tools/vouchers/out/<date>_<value>-USD_x<count>.csv` with the columns `code,value,currency,expires_on,gift_card_id`.
-- Each row is written the moment its card exists. If a run stops halfway, the CSV still holds every card created so far. Check the row count before re-running with the remaining count.
-- **The CSV holds live codes.** Send it to XTB over a secure channel, never commit it, and delete local copies after handover.
-
-## Sweep (safety net)
-
-The Flow "Deactivate voucher after order" handles single use. The sweep catches anything Flow missed, for example a failed run:
-
-```sh
-node tools/vouchers/vouchers.mjs sweep          # dry run: lists enabled, part-spent cards
-node tools/vouchers/vouchers.mjs sweep --apply  # deactivates them (cannot be undone)
-```
-
-The sweep only touches cards with `status:enabled AND balance_status:partial`. Unused cards are never affected.
+## Security
+- The sheet holds **live voucher codes**. Keep sharing restricted, and don't download or forward copies beyond what XTB needs to distribute.
+- Anyone who can edit the sheet can open the script and its properties, including the client secret. Editors should be voucher admins only. Give everyone else view access to a filtered copy, or none.
+- If the secret leaks, rotate it in Dev Dashboard and run **Connect store…** again.

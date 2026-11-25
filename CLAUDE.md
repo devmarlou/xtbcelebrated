@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `xtb-brief.pdf` — client brief (source of truth for requirements).
 - `PLAN.md` — build plan: blockers/workarounds (B1–B14), inputs checklist, phases, verification steps. Read it before store or theme work.
 
-Most of the project is **store configuration + apps** (Shopify Flow, Shopify Payments), not theme code. Theme work is a reskin plus a Liquid access gate (no Locksmith). Vouchers are created in bulk by `tools/vouchers/vouchers.mjs` (Admin API script, see its README) and made single-use by a Flow that deactivates the card after an order. The script's `sweep` command is the safety net.
+Most of the project is **store configuration + apps** (Shopify Flow, Shopify Payments), not theme code. Theme work is a reskin plus a Liquid access gate (no Locksmith). Vouchers are created in bulk from a Google Sheet extension (`tools/vouchers`: Apps Script calling the Admin API, see its README). A Flow makes each one single-use by deactivating the card after its order. The sheet's "Deactivate part-used vouchers" menu item is the safety net. `tools/` is not theme code and is excluded by `.shopifyignore`.
 
 ### Confirmed decisions (override the brief where they differ)
 - Carts may exceed the voucher value; employee pays the difference via Shopify Payments (client sign-off pending).

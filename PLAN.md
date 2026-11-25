@@ -14,10 +14,10 @@ Decisions confirmed with you (2026-11-25):
 
 | # | Area | Blocker / risk | Workaround / decision |
 |---|------|----------------|-----------------------|
-| B1 | Single-use gift card | Shopify gift cards keep their remaining balance, and Flow has **no native "deactivate gift card" action**. Flow can't easily tell which gift card an order used. | Flow trigger **Order created** → condition: a transaction with `gateway = gift_card` → **Send Admin API request** `giftCardDeactivate(id)`. The gift card ID comes from the transaction `receiptJson` (`gift_card_id`). **Spike first.** Safety net: `tools/vouchers` `sweep` deactivates every enabled, part-spent card (dry run by default). Fallback if Flow can't deactivate: Flow **Send HTTP request** to a tiny function, or run the sweep on a schedule. |
+| B1 | Single-use gift card | Shopify gift cards keep their remaining balance, and Flow has **no native "deactivate gift card" action**. Flow can't easily tell which gift card an order used. | Flow trigger **Order created** → condition: a transaction with `gateway = gift_card` → **Send Admin API request** `giftCardDeactivate(id)`. The gift card ID comes from the transaction `receiptJson` (`gift_card_id`). **Spike first.** Safety net: the voucher sheet's **Deactivate part-used vouchers** menu item (asks for confirmation first). Fallback if Flow can't deactivate: a bulk gift card app with a Flow "disable gift card" action (Datora advertises one). |
 | B2 | Race window | Flow runs a few seconds after the order. Two checkouts opened at the same moment could both spend the remaining balance. | Accept the risk (very low). Document it. Flow also tags the order `voucher-used` for audit. |
 | B3 | Refunds/cancellations | A refund back to a gift card that is now deactivated means the employee loses the value. | Support process: refund to the original method (if they paid part) and **issue a new voucher**. Add this to the training doc. |
-| B4 | Bulk codes + full-code export | The Shopify admin can't bulk-create gift cards, and its CSV export only shows the **last 4 characters**. | **Decided: local script** `tools/vouchers/vouchers.mjs create` (Dev Dashboard app, client credentials, `giftCardCreate` with `expiresOn`). It writes each full code (`giftCardCode`, returned only at creation) to a CSV as it goes. No app fee, no hosting. Matrixify was ruled out because it has no gift card sheet. Dedicated apps (BatchCard, Datora) cost a monthly fee. One batch per value per issue date, `expiresOn` = issue date + 1 year. |
+| B4 | Bulk codes + full-code export | The Shopify admin can't bulk-create gift cards, and its CSV export only shows the **last 4 characters**. | **Decided: Google Sheet + Apps Script** (`tools/vouchers`). Its Vouchers menu creates batches through a Dev Dashboard app (client credentials, `giftCardCreate` with `expiresOn`) and writes each full code (`giftCardCode`, returned only at creation) into a row. It also refreshes status and balance. No app fee, no hosting, and XTB manages everything in the sheet. Matrixify was ruled out because it has no gift card sheet. Dedicated apps (BatchCard, Datora) cost a monthly fee. One batch per value per issue date, `expiresOn` = issue date + 1 year. |
 | B5 | "XTB Coins" currency | Money-format relabelling changes Liquid output only. **Checkout, Shopify-hosted customer account pages, Shop Pay buttons and any JS `Intl` formatting still show `$`.** | Set store currency to USD. Set all 4 money formats (HTML/email, with/without currency) to `{{amount_no_decimals}} XTB Coins`. Audit Horizon JS for client-side currency formatting and patch it. Hide dynamic checkout / Shop Pay buttons on the storefront. The "How to order" page explains **1 XTB Coin = $1**. Checkout UI extensions are Plus-only, so we can't add a note inside checkout. Accept `$` there. |
 | B6 | Markets / local currency | Turning on Shopify Payments can auto-enable local currencies. A German employee would then see EUR, which breaks the Coins = USD mapping. | Create one market covering all countries, **USD only, local currencies off**, no country-specific price adjustments. |
 | B7 | Payment for the difference | With overage allowed, a real payment provider is needed. | Enable **Shopify Payments** (MerchUp entity, Poland is supported) or another gateway. Check that a USD store with PLN payout works (conversion fees). Turn off manual payment methods. Gift card + card split payment is native. |
@@ -50,7 +50,7 @@ Decisions confirmed with you (2026-11-25):
 1. B1: Flow → `giftCardDeactivate` with a real gift-card order. Confirm `receiptJson.gift_card_id` is available in Flow.
 2. Split payment (gift card + card) with Shopify Payments in test mode. Check that the storefront shows coins and checkout shows `$`.
 3. Liquid gate + new customer accounts: first sign-in, tag timing (B10), non-XTB email sees the denied screen.
-4. ~~Compare gift card apps~~ → decided: `tools/vouchers` script (Matrixify has no gift card support).
+4. ~~Compare gift card apps~~ → decided: Google Sheet voucher tool in `tools/vouchers` (Matrixify has no gift card support).
 
 **Phase 1 – Store settings**
 - Store name, English only, USD, money formats → Coins (all 4).
@@ -65,10 +65,10 @@ Decisions confirmed with you (2026-11-25):
 - Theme: Liquid gate (done). Settings → Store access: tag, allowed domains, sign-in copy. Optional Flow: order created → customer lacks tag → tag order `unverified` + hold/cancel.
 
 **Phase 3 – Vouchers**
-- Create the Dev Dashboard app (`read_gift_cards`, `write_gift_cards`), then `node tools/vouchers/vouchers.mjs create --value <v> --count 50`. Expiry defaults to issue + 1y. Hand the CSV to XTB securely.
+- Create the Dev Dashboard app (`read_gift_cards`, `write_gift_cards`) and set up the voucher sheet (`tools/vouchers/README.md`). Vouchers → Create batch: 50 cards, expiry defaults to issue + 1y. Share the sheet with XTB voucher admins only.
 - Flow: deactivate gift card after order (from the spike) + tag the order.
 - Flow: low-stock alert at 20 units (native template).
-- Training doc + session for XTB: request a batch (value, count) → receive the CSV → distribute; reissue after a refund. We (or MerchUp) run the script.
+- Training doc + session for XTB: Vouchers → Create batch → distribute codes from the sheet → Refresh status to see which are used; reissue after a refund.
 
 **Phase 4 – Horizon theme** (`git clone https://github.com/Shopify/horizon.git`, push with Shopify CLI as an unpublished theme)
 - Colour palette (`settings.color_palette` + `palette_*` button settings, rendered by `snippets/color-palette.liquid`): red bg / cream text, black pill accent. Buttons are cream on black, pill radius.

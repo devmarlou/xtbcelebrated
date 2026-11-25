@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+  <head>
+    <base target="_top" />
+    <style>
+      body { font: 14px/1.4 Arial, sans-serif; margin: 0; padding: 4px 2px; color: #202124; }
+      label { display: block; margin-bottom: 12px; font-weight: bold; }
+      input { display: block; width: 100%; box-sizing: border-box; margin-top: 4px; padding: 8px; font: inherit; }
+      small { display: block; font-weight: normal; color: #5f6368; }
+      button { padding: 8px 20px; font: inherit; cursor: pointer; }
+      .primary { background: #c20100; color: #fef7e0; border: 0; border-radius: 4px; }
+      #message { margin-top: 12px; white-space: pre-line; }
+      .error { color: #c20100; }
+    </style>
+  </head>
+  <body>
+    <form id="form">
+      <label>Value per voucher (USD = XTB Coins)
+        <input name="value" type="number" min="1" step="1" required />
+      </label>
+      <label>Quantity
+        <input name="count" type="number" min="1" step="1" required />
+      </label>
+      <label>Expires on
+        <input name="expires" type="date" required />
+        <small>Default: 1 year from today.</small>
+      </label>
+      <label>Batch name (optional)
+        <input name="note" type="text" placeholder="e.g. Batch 1 – Warsaw office" />
+      </label>
+      <button class="primary" type="submit">Create vouchers</button>
+      <button type="button" onclick="google.script.host.close()">Close</button>
+    </form>
+    <p id="message"></p>
+
+    <script>
+      const form = document.getElementById('form');
+      const message = document.getElementById('message');
+      const nextYear = new Date();
+      nextYear.setFullYear(nextYear.getFullYear() + 1);
+      form.expires.value = nextYear.toISOString().slice(0, 10);
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const data = Object.fromEntries(new FormData(form));
+        if (!confirm(`Create ${data.count} × ${data.value} USD vouchers expiring ${data.expires}?`)) return;
+
+        const button = form.querySelector('.primary');
+        button.disabled = true;
+        message.className = '';
+        message.textContent = 'Creating… keep this window open. Codes appear in the Vouchers tab as they are made.';
+
+        google.script.run
+          .withSuccessHandler((result) => {
+            message.textContent = result;
+            button.disabled = false;
+          })
+          .withFailureHandler((error) => {
+            message.className = 'error';
+            message.textContent = error.message + '\nCodes created before the error are already in the sheet.';
+            button.disabled = false;
+          })
+          .createBatch(data);
+      });
+    </script>
+  </body>
+</html>
