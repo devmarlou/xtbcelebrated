@@ -502,9 +502,9 @@
           "name": "t:names.product_card",
           "static": true,
           "settings": {
-            "link_to_product": true,
-            "hover_effects": true,
-            "show_quick_add": true,
+            "link_to_product": false,
+            "hover_effects": false,
+            "show_quick_add": false,
             "product_card_gap": 8,
             "background_color": "",
             "border": "none",
