@@ -1,67 +1,182 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
+    "banner": {
+      "type": "xtb-page-banner",
+      "settings": {
+        "eyebrow": "How to order",
+        "heading": "",
+        "all_heading": "",
+        "text": "<p>Redeeming your anniversary voucher takes about two minutes. Here is everything you need to know.</p>",
+        "pill": "1 XTB Coin = $1",
+        "show_count": false,
+        "padding-block-start": 32,
+        "padding-block-end": 16
+      }
+    },
+    "steps": {
+      "type": "xtb-steps",
+      "blocks": {
+        "s1": {
+          "type": "step",
+          "settings": {
+            "icon": "mail",
+            "title": "Sign in",
+            "text": "<p>Sign in with your <strong>XTB work email</strong>. We send you a one-time code, so there is no password to remember.</p>"
+          }
+        },
+        "s2": {
+          "type": "step",
+          "settings": {
+            "icon": "bag",
+            "title": "Pick your swag",
+            "text": "<p>Choose a product, size and colour, and add it to your cart. Prices are shown in <strong>XTB Coins</strong>.</p>"
+          }
+        },
+        "s3": {
+          "type": "step",
+          "settings": {
+            "icon": "truck",
+            "title": "Go to checkout",
+            "text": "<p>Enter your delivery address. Shipping is <strong>free</strong>, worldwide.</p>"
+          }
+        },
+        "s4": {
+          "type": "step",
+          "settings": {
+            "icon": "ticket",
+            "title": "Enter your voucher",
+            "text": "<p>Type your code in the <em>Discount code or gift card</em> field and click <em>Apply</em>.</p>"
+          }
+        },
+        "s5": {
+          "type": "step",
+          "settings": {
+            "icon": "gift",
+            "title": "Place your order",
+            "text": "<p>You get an order confirmation by email, and a shipping notice once it is on its way.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5"
+      ],
+      "settings": {
+        "eyebrow": "Step by step",
+        "heading": "Five easy steps",
+        "alignment": "left",
+        "numbered": true,
+        "columns": 3,
+        "button_label": "",
+        "button_link": "",
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    },
+    "faq": {
+      "type": "xtb-faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "What is an XTB Coin?",
+            "answer": "<p>Prices in this store are shown in XTB Coins. <strong>1 XTB Coin = $1</strong>, so checkout shows the same amount in US dollars.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Can I use my voucher more than once?",
+            "answer": "<p>No. Your voucher works <strong>once</strong>. Any value you don't use in that order is lost, so make the most of it.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "What if my cart costs more than my voucher?",
+            "answer": "<p>Checkout asks you to pay the difference by card.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "How long is my voucher valid?",
+            "answer": "<p>Vouchers are valid for <strong>1 year</strong> from the day you receive them.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Do I pay for shipping?",
+            "answer": "<p>No. Shipping is free, worldwide.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5"
+      ],
+      "settings": {
+        "eyebrow": "Questions",
+        "heading": "Good to know",
+        "text": "<p>Still stuck? Reach out to your XTB people team.</p>",
+        "open_first": true,
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    },
     "main": {
       "type": "main-page",
       "blocks": {
-        "heading": {
-          "type": "text",
-          "name": "t:names.title",
-          "settings": {
-            "text": "<h1>{{ closest.page.title }}</h1>",
-            "width": "100%",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "h2"
-          },
-          "blocks": {}
-        },
-        "pill": {
-          "type": "brand-pill",
-          "settings": {
-            "text": "1 XTB Coin = $1",
-            "font_size": 1,
-            "alignment": "left"
-          },
-          "blocks": {}
-        },
-        "steps": {
-          "type": "text",
-          "name": "Steps",
-          "settings": {
-            "text": "<ol><li><strong>Sign in</strong> with your XTB work email. We send you a one-time code, so there is no password to remember.</li><li><strong>Pick your swag.</strong> Choose a product, size and colour, and add it to your cart. Prices are shown in XTB Coins.</li><li><strong>Go to checkout</strong> and enter your delivery address. Shipping is free, worldwide.</li><li><strong>Enter your voucher code</strong> in the <em>Discount code or gift card</em> field and click <em>Apply</em>.</li><li><strong>Place your order.</strong> You will get an order confirmation by email, and a shipping notice once it is on its way.</li></ol>",
-            "width": "100%",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "rte"
-          },
-          "blocks": {}
-        },
-        "notes": {
-          "type": "text",
-          "name": "Good to know",
-          "settings": {
-            "text": "<h3>Good to know</h3><ul><li>Checkout shows prices in US dollars: <strong>1 XTB Coin = $1</strong>.</li><li>Your voucher works <strong>once</strong>. Any value you don't use in that order is lost, so make the most of it.</li><li>If your cart costs more than your voucher, checkout asks you to pay the difference by card.</li><li>Vouchers are valid for 1 year from the day you receive them.</li></ul>",
-            "width": "100%",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "rte"
-          },
-          "blocks": {}
-        },
         "page-content": {
           "type": "page-content",
           "settings": {},
           "blocks": {}
         }
       },
-      "block_order": ["heading", "pill", "steps", "notes", "page-content"],
+      "block_order": [
+        "page-content"
+      ],
       "settings": {
         "content_direction": "column",
-        "gap": 32,
-        "padding-block-start": 40,
-        "padding-block-end": 80
+        "gap": 24,
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "xtb_callout": {
+      "type": "xtb-callout",
+      "settings": {
+        "pill": "we are xtb",
+        "heading": "Ready? Pick your gift.",
+        "text": "<p>Thank you for helping XTB keep setting the High Bar.</p>",
+        "button_label": "Shop the collection",
+        "button_link": "/collections/all",
+        "padding-block-start": 24,
+        "padding-block-end": 72
       }
     }
   },
-  "order": ["main"]
+  "order": [
+    "banner",
+    "steps",
+    "faq",
+    "main",
+    "xtb_callout"
+  ]
 }

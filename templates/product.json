@@ -18,8 +18,8 @@
           "settings": {
             "media_presentation": "grid",
             "media_columns": "two",
-            "image_gap": 4,
-            "large_first_image": false,
+            "image_gap": 12,
+            "large_first_image": true,
             "icons_style": "arrow",
             "slideshow_controls_style": "counter",
             "slideshow_mobile_controls_style": "dots",
@@ -28,7 +28,7 @@
             "aspect_ratio": "adapt",
             "constrain_to_viewport": true,
             "media_fit": "contain",
-            "media_radius": 0,
+            "media_radius": 20,
             "extend_media": false,
             "zoom": true,
             "video_loop": false,
@@ -50,7 +50,7 @@
             "custom_width_mobile": 100,
             "height": "fit",
             "details_position": "flex-start",
-            "gap": 28,
+            "gap": 24,
             "sticky_details_desktop": true,
             "background_media": "none",
             "video_position": "cover",
@@ -59,7 +59,7 @@
             "border_width": 1,
             "border_opacity": 100,
             "border_radius": 0,
-            "padding-block-start": 24,
+            "padding-block-start": 16,
             "padding-block-end": 24,
             "padding-inline-start": 0,
             "padding-inline-end": 0
@@ -103,6 +103,17 @@
                 "padding-inline-end": 0
               },
               "blocks": {
+                "eyebrow": {
+                  "type": "brand-pill",
+                  "settings": {
+                    "text": "we are xtb",
+                    "font_size": 0.8,
+                    "alignment": "left",
+                    "padding-block-start": 0,
+                    "padding-block-end": 4
+                  },
+                  "blocks": {}
+                },
                 "text_xpVMaM": {
                   "type": "text",
                   "name": "t:names.title",
@@ -111,8 +122,8 @@
                     "width": "fit-content",
                     "max_width": "normal",
                     "alignment": "left",
-                    "type_preset": "h3",
-                    "font": "var(--font-body--family)",
+                    "type_preset": "h2",
+                    "font": "var(--font-heading--family)",
                     "font_size": "1rem",
                     "line_height": "normal",
                     "letter_spacing": "normal",
@@ -132,9 +143,9 @@
                   "type": "price",
                   "settings": {
                     "show_sale_price_first": true,
-                    "show_installments": true,
-                    "show_tax_info": true,
-                    "type_preset": "paragraph",
+                    "show_installments": false,
+                    "show_tax_info": false,
+                    "type_preset": "h4",
                     "width": "100%",
                     "alignment": "left",
                     "font": "var(--font-body--family)",
@@ -151,6 +162,7 @@
                 }
               },
               "block_order": [
+                "eyebrow",
                 "text_xpVMaM",
                 "price_tVjtKg"
               ]
@@ -161,7 +173,7 @@
               "settings": {
                 "thickness": 1,
                 "corner_radius": "square",
-                "divider_color": "{{ settings.color_palette.color3 }}",
+                "divider_color": "{{ settings.color_palette.foreground }}",
                 "width_percent": 100,
                 "padding-block-start": 0,
                 "padding-block-end": 0
@@ -217,30 +229,102 @@
               },
               "block_order": []
             },
-            "text_aEtTtq": {
-              "type": "text",
-              "name": "t:names.product_description",
+            "xtb_perks": {
+              "type": "xtb-perks",
               "settings": {
-                "text": "{{ closest.product.description }}",
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-body--family)",
-                "font_size": "",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
+                "perk_shipping": "<strong>Free shipping</strong>, worldwide",
+                "perk_voucher": "Pay with your <strong>voucher code</strong> at checkout",
+                "perk_coins": "<strong>1 XTB Coin = $1</strong> at checkout"
               },
               "blocks": {}
+            },
+            "product_accordion": {
+              "type": "accordion",
+              "settings": {
+                "icon": "plus",
+                "dividers": true,
+                "divider_color": "{{ settings.color_palette.foreground }}",
+                "type_preset": "h6"
+              },
+              "blocks": {
+                "row_details": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Product details",
+                    "open_by_default": true,
+                    "icon": "none"
+                  },
+                  "blocks": {
+                    "t": {
+                      "type": "text",
+                      "settings": {
+                        "text": "{{ closest.product.description }}",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte"
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "t"
+                  ]
+                },
+                "row_shipping": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Shipping & delivery",
+                    "open_by_default": false,
+                    "icon": "none"
+                  },
+                  "blocks": {
+                    "t": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>Shipping is <strong>free</strong>, worldwide. You get a shipping notice by email once your order is on its way.</p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte"
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "t"
+                  ]
+                },
+                "row_voucher": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Using your voucher",
+                    "open_by_default": false,
+                    "icon": "none"
+                  },
+                  "blocks": {
+                    "t": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>Enter your voucher code in the <em>Discount code or gift card</em> field at checkout. Your voucher works once, so add everything you want before you pay. <a href=\"/pages/how-to-order\">How to order</a></p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte"
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "t"
+                  ]
+                }
+              },
+              "block_order": [
+                "row_details",
+                "row_shipping",
+                "row_voucher"
+              ]
             }
           },
           "block_order": [
@@ -248,7 +332,8 @@
             "divider_VJhene",
             "variant_picker_R3rGDr",
             "buy_buttons_eYQEYi",
-            "text_aEtTtq"
+            "xtb_perks",
+            "product_accordion"
           ]
         },
         "disclosures": {
@@ -280,12 +365,12 @@
           "type": "text",
           "name": "t:names.header",
           "settings": {
-            "text": "<h2>You may also like </h2>",
+            "text": "<h2>More swag to pick</h2>",
             "width": "fit-content",
             "max_width": "normal",
             "alignment": "left",
-            "type_preset": "h4",
-            "font": "var(--font-body--family)",
+            "type_preset": "h3",
+            "font": "var(--font-heading--family)",
             "font_size": "",
             "line_height": "normal",
             "letter_spacing": "normal",
@@ -322,10 +407,10 @@
               "name": "t:names.product_card_media",
               "settings": {
                 "image_ratio": "adapt",
-                "border": "none",
-                "border_width": 1,
+                "border": "solid",
+                "border_width": 2,
                 "border_opacity": 100,
-                "border_radius": 0,
+                "border_radius": 20,
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
@@ -341,8 +426,8 @@
                 "max_width": "normal",
                 "alignment": "left",
                 "type_preset": "paragraph",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
+                "font": "var(--font-heading--family)",
+                "font_size": "1.0625rem",
                 "line_height": "normal",
                 "letter_spacing": "normal",
                 "case": "none",
@@ -350,7 +435,7 @@
                 "background": false,
                 "background_color": "#00000026",
                 "corner_radius": 0,
-                "padding-block-start": 4,
+                "padding-block-start": 8,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
@@ -398,19 +483,32 @@
         "max_products": 4,
         "columns": 4,
         "mobile_columns": "2",
-        "columns_gap": 12,
-        "rows_gap": 24,
+        "columns_gap": 24,
+        "rows_gap": 40,
         "icons_style": "arrow",
         "icons_shape": "none",
         "section_width": "page-width",
         "gap": 28,
-        "padding-block-start": 48,
+        "padding-block-start": 64,
         "padding-block-end": 48
+      }
+    },
+    "xtb_callout": {
+      "type": "xtb-callout",
+      "settings": {
+        "pill": "1 XTB Coin = $1",
+        "heading": "One voucher. One order.",
+        "text": "<p>Your voucher works once, so add everything you love to your cart before you check out.</p>",
+        "button_label": "How to order",
+        "button_link": "/pages/how-to-order",
+        "padding-block-start": 16,
+        "padding-block-end": 72
       }
     }
   },
   "order": [
     "main",
-    "product_recommendations_qggXJq"
+    "product_recommendations_qggXJq",
+    "xtb_callout"
   ]
 }

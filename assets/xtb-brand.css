@@ -1,0 +1,181 @@
+:root {
+  --xtb-ink: var(--palette-darkest);
+  --xtb-ink-rgb: var(--palette-darkest-rgb);
+  --xtb-cream: var(--palette-lightest);
+  --xtb-red: var(--color-primary-button-background);
+  --xtb-paper: rgb(255 255 255 / 0.6);
+  --xtb-radius: 20px;
+  --xtb-radius-lg: 28px;
+  --xtb-border: 2px solid var(--xtb-ink);
+  --xtb-shadow: 5px 5px 0 var(--xtb-ink);
+  --xtb-shadow-hover: 8px 8px 0 var(--xtb-ink);
+  --xtb-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.xtb-doodle {
+  display: block;
+  color: var(--xtb-red);
+  overflow: visible;
+}
+
+.xtb-float {
+  position: absolute;
+  pointer-events: none;
+  color: var(--xtb-red);
+  z-index: 0;
+}
+
+.xtb-float--ink {
+  color: var(--xtb-ink);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .xtb-twinkle {
+    animation: xtb-twinkle 3.2s ease-in-out infinite;
+  }
+
+  .xtb-twinkle--delay {
+    animation-delay: 1.4s;
+  }
+}
+
+@keyframes xtb-twinkle {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(0.7) rotate(25deg);
+    opacity: 0.7;
+  }
+}
+
+.xtb-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.xtb-eyebrow .brand-sparkle {
+  color: var(--xtb-red);
+}
+
+.xtb-highlight {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+}
+
+@media screen and (min-width: 750px) {
+  .xtb-highlight {
+    white-space: nowrap;
+  }
+}
+
+.xtb-highlight > .xtb-doodle {
+  position: absolute;
+  left: -4%;
+  bottom: -0.18em;
+  width: 108%;
+  height: 0.32em;
+  z-index: -1;
+}
+
+.xtb-section-head {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 40rem;
+}
+
+.xtb-section-head--center {
+  align-items: center;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.xtb-section-head :is(h1, h2, p) {
+  margin: 0;
+}
+
+.xtb-section-head__text {
+  font-size: 1.0625rem;
+  opacity: 0.8;
+}
+
+.xtb-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.xtb-actions .button,
+.xtb-actions .button-secondary {
+  padding-inline: 1.75em;
+}
+
+.xtb-actions .button .brand-sparkle,
+.xtb-actions .button-secondary .brand-sparkle {
+  margin-inline-start: 0.4em;
+}
+
+.xtb-button-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.xtb-sticker {
+  position: relative;
+  background: var(--xtb-paper);
+  border: var(--xtb-border);
+  border-radius: var(--xtb-radius);
+  box-shadow: var(--xtb-shadow);
+  transition: transform 0.25s var(--xtb-ease), box-shadow 0.25s var(--xtb-ease);
+}
+
+@media (hover: hover) {
+  .xtb-sticker--interactive:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: var(--xtb-shadow-hover);
+  }
+}
+
+.product-card {
+  transition: transform 0.3s var(--xtb-ease);
+}
+
+.product-card .card-gallery {
+  overflow: hidden;
+  background: var(--xtb-paper);
+}
+
+.product-card .card-gallery img {
+  transition: transform 0.5s var(--xtb-ease);
+}
+
+@media (hover: hover) {
+  .product-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .product-card:hover .card-gallery img {
+    transform: scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xtb-sticker,
+  .product-card,
+  .product-card .card-gallery img {
+    transition: none;
+  }
+}

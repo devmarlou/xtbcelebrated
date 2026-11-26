@@ -1,0 +1,227 @@
+{%- liquid
+  assign resource = collection | default: page
+  assign heading = section.settings.heading | default: resource.title
+  if section.settings.heading == blank
+    if collection.handle == 'all' and section.settings.all_heading != blank
+      assign heading = section.settings.all_heading
+    elsif request.page_type == 'list-collections'
+      assign heading = 'Collections'
+    endif
+  endif
+
+  assign text = section.settings.text
+  if text == blank and collection != blank
+    assign text = collection.description
+  endif
+-%}
+
+<div class="section-background"></div>
+<div
+  class="section section--page-width xtb-banner spacing-style"
+  style="{% render 'spacing-style', settings: section.settings %}"
+>
+  <div class="xtb-banner__panel">
+    {%- render 'brand-sparkle', class: 'xtb-float xtb-twinkle xtb-banner__spark xtb-banner__spark--1' -%}
+    {%- render 'brand-sparkle', class: 'xtb-float xtb-float--ink xtb-twinkle xtb-twinkle--delay xtb-banner__spark xtb-banner__spark--2' -%}
+    {%- render 'xtb-doodle', name: 'squiggle', class: 'xtb-float xtb-banner__squiggle' -%}
+
+    <div class="xtb-banner__content">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="xtb-eyebrow">{% render 'brand-sparkle' %}{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+
+      <h1 class="xtb-banner__heading">
+        <span class="xtb-highlight">
+          {{- heading | escape -}}
+          {%- render 'xtb-doodle', name: 'underline' -%}
+        </span>
+      </h1>
+
+      {%- if text != blank -%}
+        <div class="xtb-banner__text">{{ text }}</div>
+      {%- endif -%}
+
+      <div class="xtb-banner__meta">
+        {%- if section.settings.pill != blank -%}
+          {%- render 'brand-pill', text: section.settings.pill -%}
+        {%- endif -%}
+        {%- if section.settings.show_count and collection != blank -%}
+          <span class="xtb-banner__count">
+            {{- collection.products_count }}
+            {% if collection.products_count == 1 %}item{% else %}items{% endif %} to choose from
+          </span>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .xtb-banner__panel {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(32px, 6vw, 64px) clamp(20px, 5vw, 56px);
+    border: var(--xtb-border);
+    border-radius: var(--xtb-radius-lg);
+    background: var(--xtb-paper);
+  }
+
+  .xtb-banner__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    max-width: 44rem;
+  }
+
+  .xtb-banner__heading {
+    margin: 0;
+    font-size: clamp(2.5rem, 7vw, 4.5rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .xtb-banner__text {
+    max-width: 36rem;
+    font-size: 1.0625rem;
+    opacity: 0.8;
+  }
+
+  .xtb-banner__text > * {
+    margin: 0;
+  }
+
+  .xtb-banner__text > * + * {
+    margin-top: 0.75em;
+  }
+
+  .xtb-banner__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    margin-top: 8px;
+  }
+
+  .xtb-banner__meta:empty {
+    display: none;
+  }
+
+  .xtb-banner__count {
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+
+  .xtb-banner__spark--1 {
+    top: 18%;
+    right: 9%;
+    font-size: clamp(40px, 7vw, 72px);
+  }
+
+  .xtb-banner__spark--2 {
+    top: 54%;
+    right: 20%;
+    font-size: clamp(20px, 3vw, 32px);
+  }
+
+  .xtb-banner__squiggle {
+    right: 6%;
+    bottom: 14%;
+    width: clamp(70px, 10vw, 120px);
+    height: auto;
+  }
+
+  @media screen and (max-width: 749px) {
+    .xtb-banner__spark--2,
+    .xtb-banner__squiggle {
+      display: none;
+    }
+
+    .xtb-banner__spark--1 {
+      top: 12px;
+      right: 16px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "XTB page banner",
+  "class": "section-wrapper",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "On collection pages the heading and text default to the collection title and description. On pages they default to the page title."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading override"
+    },
+    {
+      "type": "text",
+      "id": "all_heading",
+      "label": "Heading on All products",
+      "info": "Used on /collections/all instead of its default title.",
+      "default": "All the swag"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text override"
+    },
+    {
+      "type": "text",
+      "id": "pill",
+      "label": "Pill",
+      "default": "we are xtb"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_count",
+      "label": "Show product count (collections)",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    }
+  ],
+  "presets": [
+    {
+      "name": "XTB page banner",
+      "category": "XTBCelebrated"
+    }
+  ]
+}
+{% endschema %}

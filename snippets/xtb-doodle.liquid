@@ -1,0 +1,37 @@
+{%- doc -%}
+  Renders a hand-drawn doodle accent from the XTBCelebrated brand card.
+  Strokes use `currentColor`, so set `color` on the wrapper (red accent by default via `.xtb-doodle`).
+
+  @param {string} name - Doodle to draw: `underline`, `circle`, `arrow`, `squiggle`, `burst` or `star`
+  @param {string} [class] - Extra CSS class for the SVG
+
+  @example
+  {% render 'xtb-doodle', name: 'underline', class: 'xtb-hero__underline' %}
+{%- enddoc -%}
+
+{%- case name -%}
+  {%- when 'underline' -%}
+    <svg class="xtb-doodle {{ class }}" viewBox="0 0 300 24" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <path d="M4 16c38-7 86-11 140-10 50 1 98 4 152 2" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+      <path d="M38 21c44-4 112-6 186-3" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+    </svg>
+  {%- when 'circle' -%}
+    <svg class="xtb-doodle {{ class }}" viewBox="0 0 200 90" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <path d="M118 8C60 2 8 18 6 44s52 40 104 38 86-18 84-40S152 6 96 10" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+    </svg>
+  {%- when 'arrow' -%}
+    <svg class="xtb-doodle {{ class }}" viewBox="0 0 90 70" aria-hidden="true" focusable="false">
+      <path d="M6 10c22 2 48 12 58 34 3 7 4 13 3 19" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M52 52l15 13 12-17" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  {%- when 'squiggle' -%}
+    <svg class="xtb-doodle {{ class }}" viewBox="0 0 120 24" aria-hidden="true" focusable="false">
+      <path d="M4 14c10-12 18-12 24 0s14 12 22 0 16-12 24 0 14 12 22 0 14-10 20-4" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+    </svg>
+  {%- when 'burst' -%}
+    <svg class="xtb-doodle {{ class }}" viewBox="0 0 60 60" aria-hidden="true" focusable="false">
+      <path d="M30 4v12M30 44v12M4 30h12M44 30h12M11 11l8 8M41 41l8 8M49 11l-8 8M19 41l-8 8" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+    </svg>
+  {%- else -%}
+    {%- render 'brand-sparkle', class: class -%}
+{%- endcase -%}

@@ -1,0 +1,432 @@
+<div class="section-background"></div>
+<div
+  class="section section--page-width xtb-hero spacing-style"
+  style="{% render 'spacing-style', settings: section.settings %}"
+>
+  <div class="xtb-hero__grid">
+    <div class="xtb-hero__copy">
+      {%- if section.settings.eyebrow != blank -%}
+        {%- render 'brand-pill', text: section.settings.eyebrow, class: 'xtb-hero__pill' -%}
+      {%- endif -%}
+
+      <h1 class="xtb-hero__heading">
+        <span class="xtb-highlight">
+          {{- section.settings.heading | escape -}}
+          {%- render 'xtb-doodle', name: 'underline' -%}
+        </span>
+      </h1>
+
+      {%- if section.settings.subheading != blank -%}
+        <p class="xtb-hero__subheading">{{ section.settings.subheading | escape }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.text != blank -%}
+        <div class="xtb-hero__text">{{ section.settings.text }}</div>
+      {%- endif -%}
+
+      <div class="xtb-actions">
+        {%- if section.settings.button_label != blank -%}
+          <a class="button" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">
+            <span class="xtb-button-content">
+              {{- section.settings.button_label | escape -}}
+              {%- render 'brand-sparkle' -%}
+            </span>
+          </a>
+        {%- endif -%}
+        {%- if section.settings.button_2_label != blank and section.settings.button_2_link != blank -%}
+          <a class="button button-secondary" href="{{ section.settings.button_2_link }}">
+            {{- section.settings.button_2_label | escape -}}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="xtb-hero__visual">
+      {%- render 'xtb-doodle', name: 'burst', class: 'xtb-float xtb-hero__burst' -%}
+      {%- render 'brand-sparkle', class: 'xtb-float xtb-twinkle xtb-hero__spark xtb-hero__spark--1' -%}
+      {%- render 'brand-sparkle', class: 'xtb-float xtb-float--ink xtb-twinkle xtb-twinkle--delay xtb-hero__spark xtb-hero__spark--2' -%}
+      {%- render 'brand-sparkle', class: 'xtb-float xtb-twinkle xtb-hero__spark xtb-hero__spark--3' -%}
+
+      {%- if section.settings.image != blank -%}
+        <div class="xtb-hero__image xtb-sticker">
+          {{
+            section.settings.image
+            | image_url: width: 1400
+            | image_tag:
+              loading: 'eager',
+              fetchpriority: 'high',
+              sizes: '(min-width: 990px) 45vw, 90vw',
+              widths: '400, 600, 800, 1000, 1200, 1400'
+          }}
+        </div>
+      {%- else -%}
+        <div class="xtb-hero__card-stack" aria-hidden="true">
+          <div class="xtb-hero__card xtb-hero__card--back xtb-sticker">
+            {%- render 'xtb-doodle', name: 'squiggle', class: 'xtb-hero__card-squiggle' -%}
+          </div>
+          <div class="xtb-hero__card xtb-hero__card--front">
+            <div class="xtb-hero__card-top">
+              <span>{{ shop.name | escape }}</span>
+              {%- render 'brand-sparkle' -%}
+            </div>
+            <p class="xtb-hero__card-title">
+              {{- section.settings.card_title | escape -}}
+              {%- render 'brand-sparkle', class: 'xtb-hero__card-title-spark' -%}
+            </p>
+            <div class="xtb-hero__card-bottom">
+              {%- render 'brand-pill', text: section.settings.card_pill, class: 'xtb-hero__card-pill' -%}
+              <span class="xtb-hero__card-caption">{{ section.settings.card_caption | escape }}</span>
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- render 'xtb-doodle', name: 'arrow', class: 'xtb-float xtb-float--ink xtb-hero__arrow' -%}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .xtb-hero {
+    overflow: hidden;
+  }
+
+  .xtb-hero__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: center;
+    gap: 56px;
+  }
+
+  .xtb-hero__copy {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .xtb-hero__heading {
+    margin: 0;
+    font-size: clamp(3rem, 9vw, 6.5rem);
+    padding-bottom: 0.12em;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+  }
+
+  .xtb-hero__subheading {
+    margin: 0;
+    font-size: clamp(1.375rem, 2.6vw, 2rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+  }
+
+  .xtb-hero__text {
+    max-width: 32rem;
+    font-size: 1.0625rem;
+    opacity: 0.8;
+  }
+
+  .xtb-hero__text > * {
+    margin: 0;
+  }
+
+  .xtb-hero__copy .xtb-actions {
+    margin-top: 8px;
+  }
+
+  .xtb-hero__visual {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 300px;
+    padding: 24px 12px 40px;
+  }
+
+  .xtb-hero__image {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 520px);
+    overflow: hidden;
+    transform: rotate(-2deg);
+  }
+
+  .xtb-hero__image img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .xtb-hero__card-stack {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 440px);
+    aspect-ratio: 1.586;
+  }
+
+  .xtb-hero__card {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--xtb-radius-lg);
+  }
+
+  .xtb-hero__card--back {
+    transform: rotate(7deg) translate(18px, 6px);
+    display: grid;
+    place-items: end start;
+    padding: 24px;
+  }
+
+  .xtb-hero__card-squiggle {
+    width: 96px;
+    height: auto;
+  }
+
+  .xtb-hero__card--front {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: clamp(20px, 5%, 32px);
+    background: var(--xtb-ink);
+    color: var(--xtb-cream);
+    box-shadow: 0 24px 48px -16px rgb(var(--xtb-ink-rgb) / 0.45);
+    transform: rotate(-5deg);
+    transition: transform 0.5s var(--xtb-ease);
+  }
+
+  @media (hover: hover) {
+    .xtb-hero__card-stack:hover .xtb-hero__card--front {
+      transform: rotate(-2deg) translateY(-6px);
+    }
+  }
+
+  .xtb-hero__card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .xtb-hero__card-top .brand-sparkle {
+    color: var(--xtb-red);
+    font-size: 1.25rem;
+  }
+
+  .xtb-hero__card-title {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 0.1em;
+    margin: 0;
+    font-size: clamp(2.75rem, 9vw, 4.5rem);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    font-style: italic;
+  }
+
+  .xtb-hero__card-title-spark {
+    color: var(--xtb-red);
+    font-size: 0.45em;
+  }
+
+  .xtb-hero__card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .xtb-hero__card-pill {
+    --brand-pill-background: var(--xtb-cream);
+    --brand-pill-text: var(--xtb-ink);
+    --brand-sparkle-color: var(--xtb-red);
+
+    font-size: 0.875rem;
+  }
+
+  .xtb-hero__card-caption {
+    font-size: 0.8125rem;
+    opacity: 0.7;
+    text-align: right;
+  }
+
+  .xtb-hero__spark {
+    font-size: 28px;
+  }
+
+  .xtb-hero__spark--1 {
+    top: 0;
+    left: 8%;
+    font-size: 36px;
+  }
+
+  .xtb-hero__spark--2 {
+    top: 14%;
+    right: 2%;
+    font-size: 20px;
+  }
+
+  .xtb-hero__spark--3 {
+    bottom: 6%;
+    right: 18%;
+    font-size: 24px;
+  }
+
+  .xtb-hero__burst {
+    top: -4px;
+    right: 10%;
+    width: 44px;
+    height: 44px;
+  }
+
+  .xtb-hero__arrow {
+    bottom: 0;
+    left: 2%;
+    width: 72px;
+    height: auto;
+    transform: rotate(160deg);
+  }
+
+  @media screen and (min-width: 990px) {
+    .xtb-hero__grid {
+      grid-template-columns: 1.05fr 1fr;
+      gap: 64px;
+    }
+
+    .xtb-hero__visual {
+      min-height: 440px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .xtb-hero__card--front {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "XTB hero",
+  "class": "section-wrapper",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Pill",
+      "default": "we are xtb"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Thank you!"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Keep setting the High Bar."
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Your anniversary gift is here. Pick the swag you love and pay with your voucher. Shipping is on us, worldwide.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Primary label",
+      "default": "Pick your gift"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Primary link"
+    },
+    {
+      "type": "text",
+      "id": "button_2_label",
+      "label": "Secondary label",
+      "default": "How to order"
+    },
+    {
+      "type": "url",
+      "id": "button_2_link",
+      "label": "Secondary link"
+    },
+    {
+      "type": "header",
+      "content": "Visual"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "Leave empty to show the branded voucher card."
+    },
+    {
+      "type": "text",
+      "id": "card_title",
+      "label": "Card title",
+      "default": "CHEERS!"
+    },
+    {
+      "type": "text",
+      "id": "card_pill",
+      "label": "Card pill",
+      "default": "we are xtb"
+    },
+    {
+      "type": "text",
+      "id": "card_caption",
+      "label": "Card caption",
+      "default": "Anniversary voucher"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    }
+  ],
+  "presets": [
+    {
+      "name": "XTB hero",
+      "category": "XTBCelebrated"
+    }
+  ]
+}
+{% endschema %}

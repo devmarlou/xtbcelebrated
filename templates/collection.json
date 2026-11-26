@@ -9,90 +9,17 @@
  */
 {
   "sections": {
-    "section": {
-      "type": "section",
-      "blocks": {
-        "text_tqQTNE": {
-          "type": "text",
-          "name": "t:names.title",
-          "settings": {
-            "text": "<h1>{{ closest.collection.title }}</h1>",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "h2",
-            "font": "var(--font-body--family)",
-            "font_size": "",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "text_twGGkJ": {
-          "type": "text",
-          "name": "t:names.description",
-          "settings": {
-            "text": "{{ closest.collection.description }}",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "rte",
-            "font": "var(--font-body--family)",
-            "font_size": "",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "text_tqQTNE",
-        "text_twGGkJ"
-      ],
-      "name": "t:names.heading",
+    "banner": {
+      "type": "xtb-page-banner",
       "settings": {
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "flex-start",
-        "vertical_alignment": "center",
-        "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "flex-start",
-        "vertical_alignment_flex_direction_column": "center",
-        "gap": 12,
-        "section_width": "page-width",
-        "section_height": "",
-        "section_height_custom": 50,
-        "background_media": "none",
-        "video_position": "cover",
-        "background_image_position": "cover",
-        "toggle_overlay": false,
-        "overlay_color": "#00000026",
-        "overlay_style": "solid",
-        "gradient_direction": "to top",
-        "border": "none",
-        "border_width": 1,
-        "border_opacity": 100,
-        "border_radius": 0,
-        "padding-block-start": 48,
-        "padding-block-end": 48
+        "eyebrow": "The collection",
+        "heading": "",
+        "all_heading": "All the swag",
+        "text": "",
+        "pill": "we are xtb",
+        "show_count": true,
+        "padding-block-start": 32,
+        "padding-block-end": 32
       }
     },
     "main": {
@@ -138,10 +65,10 @@
               "type": "_product-card-gallery",
               "settings": {
                 "image_ratio": "adapt",
-                "border": "none",
-                "border_width": 1,
+                "border": "solid",
+                "border_width": 2,
                 "border_opacity": 100,
-                "border_radius": 0,
+                "border_radius": 20,
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
@@ -157,8 +84,8 @@
                 "max_width": "normal",
                 "alignment": "left",
                 "type_preset": "paragraph",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
+                "font": "var(--font-heading--family)",
+                "font_size": "1.0625rem",
                 "line_height": "normal",
                 "letter_spacing": "normal",
                 "case": "none",
@@ -166,7 +93,7 @@
                 "background": false,
                 "background_color": "#00000026",
                 "corner_radius": 0,
-                "padding-block-start": 4,
+                "padding-block-start": 8,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
@@ -220,17 +147,30 @@
         "mobile_product_card_size": "small",
         "product_grid_width": "centered",
         "full_width_on_mobile": true,
-        "columns_gap_horizontal": 16,
-        "columns_gap_vertical": 24,
+        "columns_gap_horizontal": 24,
+        "columns_gap_vertical": 40,
         "padding-inline-start": 0,
         "padding-inline-end": 0,
-        "padding-block-start": 0,
-        "padding-block-end": 32
+        "padding-block-start": 8,
+        "padding-block-end": 48
+      }
+    },
+    "xtb_callout": {
+      "type": "xtb-callout",
+      "settings": {
+        "pill": "1 XTB Coin = $1",
+        "heading": "Got your voucher code?",
+        "text": "<p>Add your picks to the cart and enter the code at checkout. Shipping is free, worldwide.</p>",
+        "button_label": "How to order",
+        "button_link": "/pages/how-to-order",
+        "padding-block-start": 24,
+        "padding-block-end": 72
       }
     }
   },
   "order": [
-    "section",
-    "main"
+    "banner",
+    "main",
+    "xtb_callout"
   ]
 }

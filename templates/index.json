@@ -9,6 +9,150 @@
  */
 {
   "sections": {
+    "xtb_hero": {
+      "type": "xtb-hero",
+      "settings": {
+        "eyebrow": "we are xtb",
+        "heading": "Thank you!",
+        "subheading": "Keep setting the High Bar.",
+        "text": "<p>Your anniversary gift is here. Pick the swag you love and pay with your voucher. Shipping is on us, worldwide.</p>",
+        "button_label": "Pick your gift",
+        "button_link": "/collections/all",
+        "button_2_label": "How to order",
+        "button_2_link": "/pages/how-to-order",
+        "card_title": "CHEERS!",
+        "card_pill": "we are xtb",
+        "card_caption": "Anniversary voucher",
+        "padding-block-start": 48,
+        "padding-block-end": 64
+      }
+    },
+    "brand_ticker": {
+      "type": "marquee",
+      "name": "Brand ticker",
+      "blocks": {
+        "t1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Thank you!</p>",
+            "width": "fit-content",
+            "max_width": "none",
+            "alignment": "left",
+            "type_preset": "custom",
+            "font": "var(--font-heading--family)",
+            "font_size": "2rem",
+            "line_height": "tight",
+            "letter_spacing": "tight",
+            "case": "none",
+            "wrap": "nowrap"
+          },
+          "blocks": {}
+        },
+        "s1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>✦</p>",
+            "width": "fit-content",
+            "max_width": "none",
+            "alignment": "left",
+            "type_preset": "custom",
+            "font": "var(--font-heading--family)",
+            "font_size": "1.5rem",
+            "line_height": "tight",
+            "letter_spacing": "tight",
+            "case": "none",
+            "wrap": "nowrap",
+            "text_color": "{{ settings.color_palette.color1 }}"
+          },
+          "blocks": {}
+        },
+        "t2": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Keep setting the High Bar</p>",
+            "width": "fit-content",
+            "max_width": "none",
+            "alignment": "left",
+            "type_preset": "custom",
+            "font": "var(--font-heading--family)",
+            "font_size": "2rem",
+            "line_height": "tight",
+            "letter_spacing": "tight",
+            "case": "none",
+            "wrap": "nowrap"
+          },
+          "blocks": {}
+        },
+        "s2": {
+          "type": "text",
+          "settings": {
+            "text": "<p>✦</p>",
+            "width": "fit-content",
+            "max_width": "none",
+            "alignment": "left",
+            "type_preset": "custom",
+            "font": "var(--font-heading--family)",
+            "font_size": "1.5rem",
+            "line_height": "tight",
+            "letter_spacing": "tight",
+            "case": "none",
+            "wrap": "nowrap",
+            "text_color": "{{ settings.color_palette.color1 }}"
+          },
+          "blocks": {}
+        },
+        "t3": {
+          "type": "text",
+          "settings": {
+            "text": "<p>we are xtb</p>",
+            "width": "fit-content",
+            "max_width": "none",
+            "alignment": "left",
+            "type_preset": "custom",
+            "font": "var(--font-heading--family)",
+            "font_size": "2rem",
+            "line_height": "tight",
+            "letter_spacing": "tight",
+            "case": "none",
+            "wrap": "nowrap"
+          },
+          "blocks": {}
+        },
+        "s3": {
+          "type": "text",
+          "settings": {
+            "text": "<p>✦</p>",
+            "width": "fit-content",
+            "max_width": "none",
+            "alignment": "left",
+            "type_preset": "custom",
+            "font": "var(--font-heading--family)",
+            "font_size": "1.5rem",
+            "line_height": "tight",
+            "letter_spacing": "tight",
+            "case": "none",
+            "wrap": "nowrap",
+            "text_color": "{{ settings.color_palette.color1 }}"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "t1",
+        "s1",
+        "t2",
+        "s2",
+        "t3",
+        "s3"
+      ],
+      "settings": {
+        "movement_direction": "normal",
+        "background_color": "{{ settings.color_palette.foreground }}",
+        "padding-block-start": 20,
+        "padding-block-end": 20,
+        "gap_between_elements": 32
+      }
+    },
     "product_list_fa6P9H": {
       "type": "product-list",
       "blocks": {
@@ -52,8 +196,8 @@
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
-                "type_preset": "h4",
-                "font": "var(--font-body--family)",
+                "type_preset": "h2",
+                "font": "var(--font-heading--family)",
                 "font_size": "",
                 "line_height": "normal",
                 "letter_spacing": "normal",
@@ -75,14 +219,13 @@
               "settings": {
                 "label": "View all",
                 "open_in_new_tab": false,
-                "style_class": "button-unstyled",
+                "style_class": "button-secondary",
                 "width": "fit-content",
                 "custom_width": 100,
                 "width_mobile": "fit-content",
                 "custom_width_mobile": 100
               },
-              "blocks": {},
-              "disabled": true
+              "blocks": {}
             }
           },
           "block_order": [
@@ -111,10 +254,10 @@
               "name": "t:names.product_card_media",
               "settings": {
                 "image_ratio": "adapt",
-                "border": "none",
-                "border_width": 1,
+                "border": "solid",
+                "border_width": 2,
                 "border_opacity": 100,
-                "border_radius": 0,
+                "border_radius": 20,
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
@@ -130,8 +273,8 @@
                 "max_width": "normal",
                 "alignment": "left",
                 "type_preset": "paragraph",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
+                "font": "var(--font-heading--family)",
+                "font_size": "1.0625rem",
                 "line_height": "normal",
                 "letter_spacing": "normal",
                 "case": "none",
@@ -139,7 +282,7 @@
                 "background": false,
                 "background_color": "#00000026",
                 "corner_radius": 0,
-                "padding-block-start": 4,
+                "padding-block-start": 8,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
@@ -182,94 +325,83 @@
         "layout_type": "grid",
         "carousel_on_mobile": false,
         "max_products": 10,
-        "columns": 4,
+        "columns": 3,
         "mobile_columns": "2",
         "mobile_card_size": "60cqw",
-        "columns_gap": 8,
-        "rows_gap": 24,
+        "columns_gap": 24,
+        "rows_gap": 40,
         "icons_style": "arrow",
         "icons_shape": "none",
         "section_width": "page-width",
         "horizontal_alignment": "flex-start",
         "gap": 28,
-        "padding-block-start": 48,
-        "padding-block-end": 48
+        "padding-block-start": 56,
+        "padding-block-end": 56
       }
     },
-    "brand_hero": {
-      "type": "section",
-      "name": "Brand hero",
+    "xtb_steps": {
+      "type": "xtb-steps",
       "blocks": {
-        "heading": {
-          "type": "text",
+        "step_1": {
+          "type": "step",
           "settings": {
-            "text": "<h1>Thank you!</h1>",
-            "width": "100%",
-            "max_width": "normal",
-            "alignment": "center",
-            "type_preset": "h1"
-          },
-          "blocks": {}
+            "icon": "user",
+            "title": "Sign in",
+            "text": "<p>Use your XTB work email. We send a one-time code, no password needed.</p>"
+          }
         },
-        "subheading": {
-          "type": "text",
+        "step_2": {
+          "type": "step",
           "settings": {
-            "text": "<p>Keep setting the High Bar.</p>",
-            "width": "100%",
-            "max_width": "normal",
-            "alignment": "center",
-            "type_preset": "h3"
-          },
-          "blocks": {}
+            "icon": "bag",
+            "title": "Pick your swag",
+            "text": "<p>Choose your size and colour and add it to your cart. Prices are in XTB Coins.</p>"
+          }
         },
-        "pill": {
-          "type": "brand-pill",
+        "step_3": {
+          "type": "step",
           "settings": {
-            "text": "we are xtb",
-            "font_size": 1.2,
-            "alignment": "center"
-          },
-          "blocks": {}
-        },
-        "button": {
-          "type": "button",
-          "name": "t:names.button",
-          "settings": {
-            "label": "How to order",
-            "link": "/pages/how-to-order",
-            "open_in_new_tab": false,
-            "style_class": "button-custom",
-            "custom_button_background": "rgba(0, 0, 0, 0)",
-            "custom_button_text": "{{ settings.color_palette.foreground }}",
-            "custom_button_border": "{{ settings.color_palette.foreground }}",
-            "width": "fit-content",
-            "custom_width": 100,
-            "width_mobile": "fit-content",
-            "custom_width_mobile": 100
-          },
-          "blocks": {}
+            "icon": "ticket",
+            "title": "Redeem your voucher",
+            "text": "<p>Enter your voucher code at checkout. Shipping is free, worldwide.</p>"
+          }
         }
       },
       "block_order": [
-        "heading",
-        "subheading",
-        "pill",
-        "button"
+        "step_1",
+        "step_2",
+        "step_3"
       ],
       "settings": {
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment_flex_direction_column": "center",
-        "vertical_alignment_flex_direction_column": "center",
-        "gap": 20,
-        "section_width": "page-width",
-        "padding-block-start": 72,
+        "eyebrow": "How it works",
+        "heading": "Three steps to your gift",
+        "alignment": "center",
+        "numbered": true,
+        "columns": 3,
+        "button_label": "",
+        "button_link": "",
+        "padding-block-start": 56,
         "padding-block-end": 56
+      }
+    },
+    "xtb_callout": {
+      "type": "xtb-callout",
+      "settings": {
+        "pill": "1 XTB Coin = $1",
+        "heading": "Your voucher, your pick.",
+        "text": "<p>Prices are shown in XTB Coins. Checkout shows the same amount in US dollars. Need help? Read <a href=\"/pages/how-to-order\">how to order</a>.</p>",
+        "button_label": "Pick your gift",
+        "button_link": "/collections/all",
+        "padding-block-start": 24,
+        "padding-block-end": 72
       }
     }
   },
   "order": [
-    "brand_hero",
-    "product_list_fa6P9H"
+    "xtb_hero",
+    "brand_ticker",
+    "product_list_fa6P9H",
+    "xtb_steps",
+    "xtb_callout"
   ]
 }

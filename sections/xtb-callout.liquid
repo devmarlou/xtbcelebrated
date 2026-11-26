@@ -1,0 +1,202 @@
+<div class="section-background"></div>
+<div
+  class="section section--page-width xtb-callout spacing-style"
+  style="{% render 'spacing-style', settings: section.settings %}"
+>
+  <div class="xtb-callout__panel">
+    {%- render 'brand-sparkle', class: 'xtb-float xtb-twinkle xtb-callout__spark xtb-callout__spark--1' -%}
+    {%- render 'brand-sparkle', class: 'xtb-float xtb-twinkle xtb-twinkle--delay xtb-callout__spark xtb-callout__spark--2' -%}
+    {%- render 'xtb-doodle', name: 'circle', class: 'xtb-float xtb-callout__circle' -%}
+
+    <div class="xtb-callout__content">
+      {%- if section.settings.pill != blank -%}
+        {%- render 'brand-pill', text: section.settings.pill, class: 'xtb-callout__pill' -%}
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="xtb-callout__heading">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="xtb-callout__text">{{ section.settings.text }}</div>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.button_label != blank -%}
+      <a class="button xtb-callout__button" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">
+        <span class="xtb-button-content">
+          {{- section.settings.button_label | escape -}}
+          {%- render 'brand-sparkle' -%}
+        </span>
+      </a>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .xtb-callout__panel {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 28px;
+    padding: clamp(32px, 6vw, 64px) clamp(24px, 5vw, 64px);
+    border-radius: var(--xtb-radius-lg);
+    background: var(--xtb-ink);
+    color: var(--xtb-cream);
+  }
+
+  @media screen and (min-width: 990px) {
+    .xtb-callout__panel {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  .xtb-callout__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    max-width: 40rem;
+  }
+
+  .xtb-callout__pill {
+    --brand-pill-background: var(--xtb-cream);
+    --brand-pill-text: var(--xtb-ink);
+  }
+
+  .xtb-callout__heading {
+    margin: 0;
+    color: var(--xtb-cream);
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+  }
+
+  .xtb-callout__text {
+    font-size: 1.0625rem;
+    opacity: 0.8;
+  }
+
+  .xtb-callout__text > * {
+    margin: 0;
+  }
+
+  .xtb-callout__text a {
+    color: inherit;
+  }
+
+  .xtb-callout__button {
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+    padding-inline: 2em;
+  }
+
+  .xtb-callout__spark--1 {
+    top: 16px;
+    right: 28%;
+    font-size: 28px;
+  }
+
+  .xtb-callout__spark--2 {
+    bottom: 20px;
+    left: 46%;
+    font-size: 18px;
+  }
+
+  .xtb-callout__circle {
+    right: -20px;
+    bottom: -24px;
+    width: 220px;
+    height: 110px;
+    opacity: 0.9;
+    transform: rotate(-8deg);
+  }
+
+  @media screen and (max-width: 749px) {
+    .xtb-callout__spark--2,
+    .xtb-callout__circle {
+      display: none;
+    }
+
+    .xtb-callout__spark--1 {
+      right: 20px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "XTB callout",
+  "class": "section-wrapper",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "pill",
+      "label": "Pill",
+      "default": "1 XTB Coin = $1"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Your voucher, your pick."
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Prices are shown in XTB Coins. Checkout shows the same amount in US dollars.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Pick your gift"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    }
+  ],
+  "presets": [
+    {
+      "name": "XTB callout",
+      "category": "XTBCelebrated"
+    }
+  ]
+}
+{% endschema %}
