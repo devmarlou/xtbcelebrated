@@ -582,6 +582,17 @@
               },
               "blocks": {}
             },
+            "xtb_variant_chooser_qaeLfd": {
+              "type": "xtb-variant-chooser",
+              "name": "XTB variant chooser",
+              "settings": {
+                "options_to_show": "",
+                "style": "pills",
+                "show_label": true,
+                "hide_unavailable": false
+              },
+              "blocks": {}
+            },
             "buy_buttons_qWDKBE": {
               "type": "buy-buttons",
               "name": "t:names.product_buy_buttons",
@@ -651,6 +662,7 @@
             "product_card_gallery_DNizbJ",
             "product_title_M7MJkb",
             "price_gLWgA6",
+            "xtb_variant_chooser_qaeLfd",
             "buy_buttons_qWDKBE"
           ]
         }
