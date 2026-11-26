@@ -284,7 +284,7 @@
       return values;
     }
 
-    update = () => {
+    update = (event) => {
       const selected = this.selectedValues();
       const variant = this.variants.find((v) => v.options.every((value, i) => value === selected[i]));
       const card = this.closest('product-card');
@@ -303,7 +303,26 @@
 
       this.markAvailability(selected);
 
+      if (event && variant) this.showVariantImage(card, variant);
     };
+
+    showVariantImage(card, variant) {
+      card.applyVariantToLinks?.(String(variant.id));
+
+      const mediaId = variant.featured_media?.id;
+      const slideshow = card.refs?.slideshow;
+      if (!mediaId || !slideshow) return;
+
+      const id = String(mediaId);
+      const slides = slideshow.refs?.slides ?? [];
+      if (!slides.some((slide) => slide.getAttribute('slide-id') === id)) return;
+
+      for (const slide of slides) {
+        if (slide.getAttribute('variant-image') == null) continue;
+        slide.hidden = slide.getAttribute('slide-id') !== id;
+      }
+      slideshow.select({ id }, undefined, { animate: false });
+    }
 
     /** Marks pill values that have no available variant with the other current selections. */
     markAvailability(selected) {
