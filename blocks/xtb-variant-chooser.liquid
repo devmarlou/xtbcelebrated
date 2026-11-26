@@ -1,0 +1,375 @@
+{%- liquid
+  assign product = closest.product
+  assign block_settings = block.settings
+  assign current = product.selected_or_first_available_variant
+
+  assign show_list = block_settings.options_to_show | downcase | split: ','
+  assign wanted = ''
+  for name in show_list
+    assign clean = name | strip
+    if clean != blank
+      assign wanted = wanted | append: '|' | append: clean | append: '|'
+    endif
+  endfor
+-%}
+
+{%- if product != blank and product.has_only_default_variant == false -%}
+  <xtb-variant-chooser
+    class="xtb-vc xtb-vc--{{ block_settings.style }}"
+    data-hide-unavailable="{{ block_settings.hide_unavailable }}"
+    {{ block.shopify_attributes }}
+  >
+    <script type="application/json" data-xtb-variants>
+      {{ product.variants | json }}
+    </script>
+
+    {%- for option in product.options_with_values -%}
+      {%- liquid
+        assign option_key = option.name | downcase | strip
+        assign option_key_wrapped = '|' | append: option_key | append: '|'
+        assign visible = true
+        if wanted != blank
+          unless wanted contains option_key_wrapped
+            assign visible = false
+          endunless
+        endif
+        assign input_name = 'xtb-vc-' | append: block.id | append: '-' | append: product.id | append: '-' | append: forloop.index
+
+        assign is_colour = false
+        assign option_label = option.name
+        if option_key == 'color' or option_key == 'colour'
+          assign is_colour = true
+          assign option_label = 'Colour'
+        endif
+      -%}
+
+      {%- if visible -%}
+        {%- if block_settings.style == 'dropdown' -%}
+          <label class="xtb-vc__field">
+            {%- if block_settings.show_label -%}
+              <span class="xtb-vc__label">{{ option_label | escape }}:</span>
+            {%- else -%}
+              <span class="visually-hidden">{{ option_label | escape }}</span>
+            {%- endif -%}
+            <select class="xtb-vc__select" data-option-position="{{ option.position }}">
+              {%- for value in option.values -%}
+                <option value="{{ value | escape }}" {% if value == option.selected_value %}selected{% endif %}>
+                  {{- value | escape -}}
+                </option>
+              {%- endfor -%}
+            </select>
+          </label>
+        {%- else -%}
+          <fieldset class="xtb-vc__field{% if is_colour %} xtb-vc__field--colour{% endif %}" data-option-position="{{ option.position }}">
+            <legend class="{% if block_settings.show_label %}xtb-vc__label{% else %}visually-hidden{% endif %}">
+              {{- option_label | escape -}}:
+            </legend>
+            <div class="xtb-vc__pills">
+              {%- for value in option.values -%}
+                {%- liquid
+                  if is_colour
+                    assign dot_colour = value.swatch.color
+                    if dot_colour == blank
+                      assign dot_colour = value | downcase | remove: ' '
+                    endif
+                  endif
+                -%}
+                <label class="xtb-vc__pill{% if is_colour %} xtb-vc__pill--colour{% endif %}"{% if is_colour %} title="{{ value | escape }}"{% endif %}>
+                  <input
+                    type="radio"
+                    class="xtb-vc__input"
+                    name="{{ input_name }}"
+                    value="{{ value | escape }}"
+                    {% if value == option.selected_value %}
+                      checked
+                    {% endif %}
+                  >
+                  {%- if is_colour -%}
+                    <span
+                      class="xtb-vc__dot"
+                      style="--dot-colour: {{ dot_colour }};{% if value.swatch.image %} --dot-image: url({{ value.swatch.image | image_url: width: 60 }});{% endif %}"
+                    >
+                      <span class="visually-hidden">{{ value | escape }}</span>
+                    </span>
+                  {%- else -%}
+                    <span>{{ value | escape }}</span>
+                  {%- endif -%}
+                </label>
+              {%- endfor -%}
+            </div>
+          </fieldset>
+        {%- endif -%}
+      {%- else -%}
+        <input type="hidden" data-option-position="{{ option.position }}" value="{{ current.options[forloop.index0] | escape }}">
+      {%- endif -%}
+    {%- endfor -%}
+  </xtb-variant-chooser>
+{%- endif -%}
+
+{% stylesheet %}
+  .xtb-vc {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .xtb-vc__field {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  /* A floated legend lays out as a normal flex item, so the label sits beside the values */
+  .xtb-vc__field > legend {
+    float: left;
+  }
+
+  .xtb-vc__label {
+    flex-shrink: 0;
+    min-width: 3.75em;
+    padding: 0;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  .xtb-vc__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .xtb-vc__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .xtb-vc__pill {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .xtb-vc__pill:not(.xtb-vc__pill--colour) > span {
+    display: inline-flex;
+    align-items: center;
+    min-width: 2.5em;
+    justify-content: center;
+    padding: 0.45em 0.9em;
+    border: 2px solid var(--xtb-ink, currentColor);
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .xtb-vc__pill:not(.xtb-vc__pill--colour) input:checked + span {
+    background: var(--xtb-ink, currentColor);
+    color: var(--xtb-cream, #fff);
+  }
+
+  .xtb-vc__pill input:focus-visible + span {
+    outline: 2px solid var(--xtb-red, currentColor);
+    outline-offset: 2px;
+  }
+
+  .xtb-vc__pill.is-unavailable:not(.xtb-vc__pill--colour) > span {
+    opacity: 0.4;
+    text-decoration: line-through;
+  }
+
+  .xtb-vc__pill.is-hidden {
+    display: none;
+  }
+
+  .xtb-vc__pills:has(.xtb-vc__dot) {
+    gap: 8px;
+  }
+
+  .xtb-vc__dot {
+    position: relative;
+    display: block;
+    width: 30px;
+    height: 30px;
+    padding: 3px;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    background: var(--dot-image, none) center / cover, var(--dot-colour, #ccc);
+    background-clip: content-box;
+    transition: border-color 0.2s ease;
+  }
+
+  /* Hairline so light colours (white, cream) stay visible on the cream page */
+  .xtb-vc__dot::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.2);
+  }
+
+  .xtb-vc__pill--colour input:checked + .xtb-vc__dot {
+    border-color: var(--xtb-ink, #000);
+  }
+
+  @media (hover: hover) {
+    .xtb-vc__pill--colour:hover input:not(:checked) + .xtb-vc__dot {
+      border-color: rgb(0 0 0 / 0.3);
+    }
+  }
+
+  .xtb-vc__pill--colour.is-unavailable .xtb-vc__dot {
+    opacity: 0.45;
+    text-decoration: none;
+  }
+
+  .xtb-vc__pill--colour.is-unavailable .xtb-vc__dot::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 2px;
+    right: 2px;
+    height: 2px;
+    background: var(--xtb-ink, #000);
+    box-shadow: 0 0 0 1px var(--xtb-cream, #fff);
+    rotate: -45deg;
+    z-index: 1;
+  }
+
+  .xtb-vc__select {
+    flex: 1;
+    min-width: 0;
+    padding: 0.6em 0.9em;
+    border: 2px solid var(--xtb-ink, currentColor);
+    border-radius: 999px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  class XtbVariantChooser extends HTMLElement {
+    connectedCallback() {
+      const data = this.querySelector('[data-xtb-variants]');
+      this.variants = data ? JSON.parse(data.textContent) : [];
+      this.addEventListener('change', this.update);
+      this.update();
+    }
+
+    disconnectedCallback() {
+      this.removeEventListener('change', this.update);
+    }
+
+    /** @returns {string[]} the selected value for every option, by position */
+    selectedValues() {
+      const values = [];
+      this.querySelectorAll('[data-option-position]').forEach((field) => {
+        const position = Number(field.dataset.optionPosition) - 1;
+        if (field instanceof HTMLFieldSetElement) {
+          const checked = field.querySelector('input:checked');
+          values[position] = checked ? checked.value : null;
+        } else {
+          values[position] = field.value;
+        }
+      });
+      return values;
+    }
+
+    update = () => {
+      const selected = this.selectedValues();
+      const variant = this.variants.find((v) => v.options.every((value, i) => value === selected[i]));
+      const card = this.closest('product-card');
+      if (!card) return;
+
+      const idInput = card.querySelector('product-form-component input[name="id"]');
+      if (idInput && variant) idInput.value = String(variant.id);
+
+      card.querySelectorAll('add-to-cart-component').forEach((container) => {
+        const canBuy = Boolean(variant && variant.available);
+        if (canBuy) container.enable?.();
+        else container.disable?.();
+        const button = container.querySelector('button');
+        if (button) button.disabled = !canBuy;
+      });
+
+      this.markAvailability(selected);
+
+    };
+
+    /** Marks pill values that have no available variant with the other current selections. */
+    markAvailability(selected) {
+      const hide = this.dataset.hideUnavailable === 'true';
+      this.querySelectorAll('fieldset[data-option-position]').forEach((field) => {
+        const position = Number(field.dataset.optionPosition) - 1;
+        field.querySelectorAll('.xtb-vc__pill').forEach((pill) => {
+          const input = pill.querySelector('input');
+          if (!input) return;
+          const available = this.variants.some(
+            (v) =>
+              v.available &&
+              v.options.every((value, i) => (i === position ? value === input.value : value === selected[i]))
+          );
+          pill.classList.toggle('is-unavailable', !available);
+          pill.classList.toggle('is-hidden', hide && !available && !input.checked);
+        });
+      });
+    }
+  }
+
+  if (!customElements.get('xtb-variant-chooser')) customElements.define('xtb-variant-chooser', XtbVariantChooser);
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "XTB variant chooser",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Shows the product's options so shoppers can pick a variant before adding to cart. Place it above the buy buttons."
+    },
+    {
+      "type": "text",
+      "id": "options_to_show",
+      "label": "Options to show",
+      "info": "Option names separated by commas, e.g. Size, Color. Leave empty to show every option. Hidden options use the first available variant's value."
+    },
+    {
+      "type": "select",
+      "id": "style",
+      "label": "Style",
+      "options": [
+        { "value": "pills", "label": "Buttons (colours as dots, sizes as pills)" },
+        { "value": "dropdown", "label": "Dropdown" }
+      ],
+      "default": "pills"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_label",
+      "label": "Show option name",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_unavailable",
+      "label": "Hide sold-out values",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "XTB variant chooser"
+    }
+  ]
+}
+{% endschema %}

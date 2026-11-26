@@ -85,8 +85,48 @@
     margin: 0;
   }
 
-  .xtb-callout__text a {
-    color: inherit;
+  .xtb-callout .xtb-callout__text a {
+    color: var(--xtb-cream);
+    text-decoration: none;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-position: left bottom;
+    background-repeat: no-repeat;
+    background-size: 100% 1px;
+    transition: background-size 0.25s var(--xtb-ease);
+  }
+
+  .xtb-callout .xtb-callout__text a:is(:hover, :focus-visible) {
+    color: #fff !important;
+    background-size: 100% 2px;
+    animation: xtb-callout-underline 0.6s var(--xtb-ease);
+  }
+
+  @keyframes xtb-callout-underline {
+    0% {
+      background-position: right bottom;
+      background-size: 100% 2px;
+    }
+
+    45% {
+      background-position: right bottom;
+      background-size: 0% 2px;
+    }
+
+    55% {
+      background-position: left bottom;
+      background-size: 0% 2px;
+    }
+
+    100% {
+      background-position: left bottom;
+      background-size: 100% 2px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .xtb-callout .xtb-callout__text a:is(:hover, :focus-visible) {
+      animation: none;
+    }
   }
 
   .xtb-callout__button {

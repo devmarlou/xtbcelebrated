@@ -17,17 +17,19 @@
       {%- render 'xtb-doodle', name: 'arrow', class: 'xtb-faq__arrow' -%}
     </div>
 
-    <div class="xtb-faq__list">
+    <xtb-faq-list class="xtb-faq__list">
       {%- for block in section.blocks -%}
         <details class="xtb-faq__item" {{ block.shopify_attributes }}{% if forloop.first and section.settings.open_first %} open{% endif %}>
           <summary class="xtb-faq__question">
             <span>{{ block.settings.question | escape }}</span>
             <span class="xtb-faq__toggle" aria-hidden="true"></span>
           </summary>
-          <div class="xtb-faq__answer">{{ block.settings.answer }}</div>
+          <div class="xtb-faq__answer">
+            <div class="xtb-faq__answer-inner">{{ block.settings.answer }}</div>
+          </div>
         </details>
       {%- endfor -%}
-    </div>
+    </xtb-faq-list>
   </div>
 </div>
 
@@ -129,22 +131,30 @@
     transform: translate(-50%, -50%) rotate(90deg);
   }
 
-  .xtb-faq__item[open] .xtb-faq__toggle {
+  .xtb-faq__item[open]:not(.is-closing) .xtb-faq__toggle {
     background: var(--xtb-red);
     transform: rotate(45deg);
   }
 
+  .xtb-faq__item.is-closing {
+    box-shadow: none;
+  }
+
   .xtb-faq__answer {
+    overflow: hidden;
+  }
+
+  .xtb-faq__answer-inner {
     padding: 0 24px 22px;
     font-size: 0.9375rem;
     opacity: 0.85;
   }
 
-  .xtb-faq__answer > * {
+  .xtb-faq__answer-inner > * {
     margin: 0;
   }
 
-  .xtb-faq__answer > * + * {
+  .xtb-faq__answer-inner > * + * {
     margin-top: 0.75em;
   }
 
@@ -155,6 +165,71 @@
     }
   }
 {% endstylesheet %}
+
+{% javascript %}
+  /**
+   * Animates the FAQ <details> open and close. Native <details> toggles instantly,
+   * so the summary click is intercepted and the answer height is animated instead.
+   */
+  class XtbFaqList extends HTMLElement {
+    connectedCallback() {
+      this.addEventListener('click', this.onClick);
+    }
+
+    disconnectedCallback() {
+      this.removeEventListener('click', this.onClick);
+    }
+
+    onClick = (event) => {
+      const summary = event.target instanceof Element ? event.target.closest('summary') : null;
+      if (!summary || !this.contains(summary)) return;
+
+      const details = summary.parentElement;
+      const answer = details?.querySelector('.xtb-faq__answer');
+      if (!(details instanceof HTMLDetailsElement) || !answer) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      event.preventDefault();
+      const wasOpen = details.open;
+      const isClosing = wasOpen && !details.classList.contains('is-closing');
+      // A closed <details> can still report its content height, so only reuse the
+      // current height when the item is open (e.g. reversing a close mid-way).
+      const startHeight = wasOpen ? answer.getBoundingClientRect().height : 0;
+
+      details._xtbAnimation?.cancel();
+
+      if (isClosing) {
+        details.classList.add('is-closing');
+        this.animate(details, answer, startHeight, 0, () => {
+          details.open = false;
+          details.classList.remove('is-closing');
+        });
+      } else {
+        details.classList.remove('is-closing');
+        details.open = true;
+        const endHeight = answer.scrollHeight;
+        this.animate(details, answer, startHeight, endHeight);
+      }
+    };
+
+    animate(details, answer, from, to, onDone) {
+      const animation = answer.animate(
+        [
+          { height: `${from}px`, opacity: from === 0 ? 0 : 1 },
+          { height: `${to}px`, opacity: to === 0 ? 0 : 1 },
+        ],
+        { duration: 320, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' }
+      );
+      details._xtbAnimation = animation;
+      animation.onfinish = () => {
+        details._xtbAnimation = null;
+        onDone?.();
+      };
+    }
+  }
+
+  if (!customElements.get('xtb-faq-list')) customElements.define('xtb-faq-list', XtbFaqList);
+{% endjavascript %}
 
 {% schema %}
 {

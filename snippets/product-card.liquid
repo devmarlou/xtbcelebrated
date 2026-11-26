@@ -22,8 +22,18 @@
 {% endif %}
 
 {% liquid
+  assign card_is_link = true
+  if block_settings.link_to_product == false
+    assign card_is_link = false
+  endif
+
+  assign card_hover = true
+  if block_settings.hover_effects == false
+    assign card_hover = false
+  endif
+
   assign has_quick_add = false
-  if settings.quick_add and product.available
+  if settings.quick_add and product.available and block_settings.show_quick_add != false
     assign has_quick_add = true
   endif
 
@@ -60,7 +70,13 @@
 %}
 
 <product-card
-  class="product-card size-style"
+  class="product-card size-style{% unless card_is_link %} product-card--static{% endunless %}{% unless card_hover %} product-card--no-hover{% endunless %}"
+  {% unless card_is_link %}
+    data-no-navigation
+  {% endunless %}
+  {% unless card_hover %}
+    data-no-hover
+  {% endunless %}
   style="{% render 'size-style', settings: block_settings %}"
   data-product-id="{{ product.id }}"
   id="product-card-{{ block.id }}"
@@ -79,6 +95,10 @@
 >
   <a
     id="{{ product_card_id | md5 }}"
+    {% unless card_is_link %}
+      tabindex="-1"
+      aria-hidden="true"
+    {% endunless %}
     {% unless onboarding %}
       {% # Link to product.url so algorithmic variant relevance and tracking params are maintained. %}
       href="{{ product.url }}"

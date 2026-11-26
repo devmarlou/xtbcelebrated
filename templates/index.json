@@ -297,10 +297,13 @@
             "border_opacity": 100,
             "border_color": "",
             "border_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
+            "padding-block-start": 4,
+            "padding-block-end": 12,
+            "padding-inline-start": 2,
+            "padding-inline-end": 10,
+            "link_to_product": false,
+            "hover_effects": false,
+            "show_quick_add": false
           },
           "blocks": {
             "product_card_gallery_677WP3": {
@@ -431,12 +434,23 @@
                 }
               },
               "block_order": []
+            },
+            "xtb_variant_chooser": {
+              "type": "xtb-variant-chooser",
+              "settings": {
+                "options_to_show": "",
+                "style": "pills",
+                "show_label": true,
+                "hide_unavailable": false
+              },
+              "blocks": {}
             }
           },
           "block_order": [
             "product_card_gallery_677WP3",
             "product_title_YXxMTj",
             "price_JQzVV4",
+            "xtb_variant_chooser",
             "buy_buttons_D8Xqim"
           ]
         }

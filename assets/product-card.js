@@ -478,6 +478,7 @@ export class ProductCard extends ProductCardLink {
    */
   previewImage(event) {
     if (event.pointerType !== 'mouse') return;
+    if (this.hasAttribute('data-no-hover')) return;
 
     const { slideshow } = this.refs;
 

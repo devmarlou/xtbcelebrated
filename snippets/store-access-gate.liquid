@@ -5,12 +5,8 @@
 {%- enddoc -%}
 
 {%- liquid
-  assign return_path = routes.collections_url | append: '/all'
-  if routes.account_login_url contains '?'
-    assign login_url = routes.account_login_url | append: '&return_url=' | append: return_path
-  else
-    assign login_url = routes.account_login_url | append: '?return_url=' | append: return_path
-  endif
+  assign return_to = routes.root_url | url_encode
+  assign login_url = '/customer_authentication/login?return_to=' | append: return_to
 -%}
 
 <section class="access-gate" aria-labelledby="AccessGateHeading">
