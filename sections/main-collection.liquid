@@ -18,6 +18,97 @@
       { once: true }
     );
   }
+
+  class MainCollectionPicker extends HTMLElement {
+    connectedCallback() {
+      this.addEventListener('click', this.onClick);
+      window.addEventListener('popstate', this.onPopState);
+    }
+
+    disconnectedCallback() {
+      this.removeEventListener('click', this.onClick);
+      window.removeEventListener('popstate', this.onPopState);
+    }
+
+    onClick = (event) => {
+      if (!(event instanceof MouseEvent) || !(event.target instanceof Element)) return;
+      const link = event.target.closest('a.main-collection__pick');
+      if (!(link instanceof HTMLAnchorElement)) return;
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      if (link.classList.contains('is-active')) return;
+      this.load(link.href, true);
+    };
+
+    onPopState = () => {
+      const active = this.querySelector('a.main-collection__pick.is-active');
+      if (active instanceof HTMLAnchorElement && active.pathname === window.location.pathname) return;
+      this.load(window.location.href, false);
+    };
+
+    setActive(url) {
+      const path = new URL(url, window.location.origin).pathname;
+      this.querySelectorAll('a.main-collection__pick').forEach((link) => {
+        const active = link instanceof HTMLAnchorElement && link.pathname === path;
+        link.classList.toggle('is-active', active);
+        if (active) link.setAttribute('aria-current', 'page');
+        else link.removeAttribute('aria-current');
+      });
+    }
+
+    async load(url, push) {
+      const sectionId = this.dataset.sectionId;
+      const results = this.closest('results-list');
+      if (!sectionId || !results) {
+        window.location.assign(url);
+        return;
+      }
+
+      const bannerSection = document.querySelector('.xtb-banner')?.closest('.shopify-section');
+      const bannerId = bannerSection?.id.replace('shopify-section-', '');
+      const sectionIds = [sectionId, bannerId].filter(Boolean);
+
+      MainCollectionPicker.controller?.abort();
+      const controller = new AbortController();
+      MainCollectionPicker.controller = controller;
+
+      this.setActive(url);
+      results.classList.add('is-switching', 'is-loading');
+      if (push) history.pushState({ mainCollection: true }, '', url);
+
+      try {
+        const requestUrl = new URL(url, window.location.origin);
+        requestUrl.searchParams.set('sections', sectionIds.join(','));
+
+        const [response] = await Promise.all([
+          fetch(requestUrl, { signal: controller.signal }),
+          new Promise((resolve) => setTimeout(resolve, 250)),
+        ]);
+        if (!response.ok) throw new Error(String(response.status));
+
+        const data = await response.json();
+        const parse = (id) =>
+          data[id]
+            ? new DOMParser().parseFromString(data[id], 'text/html').getElementById(`shopify-section-${id}`)
+            : null;
+
+        const nextResults = parse(sectionId)?.querySelector('results-list');
+        if (!nextResults) throw new Error('No results');
+
+        const nextBanner = bannerId ? parse(bannerId) : null;
+        if (bannerSection && nextBanner) bannerSection.innerHTML = nextBanner.innerHTML;
+
+        nextResults.classList.add('is-switching');
+        results.replaceWith(nextResults);
+        requestAnimationFrame(() => requestAnimationFrame(() => nextResults.classList.remove('is-switching')));
+      } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') return;
+        window.location.assign(url);
+      }
+    }
+  }
+
+  if (!customElements.get('main-collection-picker')) customElements.define('main-collection-picker', MainCollectionPicker);
 {% endjavascript %}
 
 {% comment %} We always render this full-width, as the child blocks have width: page/full settings {% endcomment %}
@@ -30,24 +121,24 @@
 {% render 'collection-wrapper-styles' %}
 
 {% liquid
-  assign source = section.settings.product_source | default: 'current'
-  assign source_collection = collection
-  assign combine_collections = false
+  assign desktop_slider = false
+  if section.settings.layout_type == 'carousel'
+    assign desktop_slider = true
+  endif
 
-  if source == 'all'
-    assign source_collection = collections.all
-  elsif source == 'selected'
-    if section.settings.collections.size == 1
-      assign source_collection = section.settings.collections.first
-    elsif section.settings.collections.size > 1
-      assign combine_collections = true
-    else
-      assign source = 'current'
-    endif
+  assign mobile_layout = section.settings.mobile_layout | default: 'grid'
+  assign mobile_slider = false
+  if mobile_layout == 'carousel'
+    assign mobile_slider = true
+  endif
+
+  assign show_grid = true
+  if desktop_slider and mobile_slider
+    assign show_grid = false
   endif
 
   assign enable_infinite_scroll = section.settings.enable_infinite_scroll
-  if combine_collections
+  if desktop_slider or mobile_slider
     assign enable_infinite_scroll = false
   endif
 %}
@@ -57,35 +148,58 @@
 ></div>
 <collection-component view-event-payload="{{ collection | standard_event_data: 'view' | escape }}">
   <results-list
-    class="section product-grid-container{% if section.settings.background_color != blank %} color-custom-{{ section.id }}{% endif %}"
+    class="section product-grid-container main-collection main-collection--mobile-{{ mobile_layout }}{% if desktop_slider %} main-collection--desktop-slider{% endif %}{% if section.settings.background_color != blank %} color-custom-{{ section.id }}{% endif %}"
     style="--padding-block-start: {{ section.settings.padding-block-start }}px; --padding-block-end: {{ section.settings.padding-block-end }}px;"
     section-id="{{ section.id }}"
     infinite-scroll="{{ enable_infinite_scroll }}"
   >
     {% render 'skip-to-content-link', href: '#ResultsList', text: 'accessibility.skip_to_results_list' %}
 
-    <div
-      class="section-resource-list__header main-collection__header"
-      style="--main-collection-header-gap: {{ section.settings.header_gap }}px;"
-    >
-      {%- content_for 'block',
-        type: '_product-list-content',
-        id: 'static-header',
-        closest.collection: source_collection
-      -%}
+    <div class="section-resource-list__header main-collection__header">
+      {%- content_for 'block', type: '_product-list-content', id: 'static-header' -%}
     </div>
+
+    <main-collection-picker data-section-id="{{ section.id }}">
+    <nav
+      class="main-collection__picker"
+      style="--main-collection-header-gap: {{ section.settings.header_gap }}px;"
+      aria-label="Collections"
+    >
+      <a
+        class="main-collection__pick{% if collection.handle == 'all' %} is-active{% endif %}"
+        href="{{ routes.all_products_collection_url }}"
+        {% if collection.handle == 'all' %}
+          aria-current="page"
+        {% endif %}
+      >
+        All
+      </a>
+      {%- for picker_collection in collections -%}
+        {%- if picker_collection.handle == 'all' or picker_collection.products_count == 0 -%}
+          {%- continue -%}
+        {%- endif -%}
+        <a
+          class="main-collection__pick{% if picker_collection.handle == collection.handle %} is-active{% endif %}"
+          href="{{ picker_collection.url }}"
+          {% if picker_collection.handle == collection.handle %}
+            aria-current="page"
+          {% endif %}
+        >
+          {{- picker_collection.title | escape -}}
+        </a>
+      {%- endfor -%}
+    </nav>
+    </main-collection-picker>
 
     <div
       class="collection-wrapper grid gap-style{% if section.settings.product_grid_width == 'full-width' %} collection-wrapper--grid-full-width{% endif %}"
     >
-      {% if source == 'current' %}
-        {% content_for 'block',
-          type: 'filters',
-          id: 'filters',
-          results: collection,
-          results_size: collection.products_count
-        %}
-      {% endif %}
+      {% content_for 'block',
+        type: 'filters',
+        id: 'filters',
+        results: collection,
+        results_size: collection.products_count
+      %}
 
       {% assign products_per_page = 24 %}
 
@@ -93,48 +207,10 @@
         {% assign products_per_page = section.settings.products_per_page %}
       {% endif %}
 
-      {% if combine_collections %}
-        {% liquid
-          assign combined_products = section.settings.collections.first.products
-          for picked in section.settings.collections offset: 1
-            assign combined_products = combined_products | concat: picked.products
-          endfor
-          assign seen_ids = '|'
-        %}
-
-        {% capture children %}
-          {% for product in combined_products %}
-            {% assign product_key = '|' | append: product.id | append: '|' %}
-            {% unless seen_ids contains product_key %}
-              {% assign seen_ids = seen_ids | append: product.id | append: '|' %}
-              <li
-                id="{{ section.id }}-{{ product.id }}"
-                class="product-grid__item product-grid__item--{{ forloop.index0 }}"
-                data-page="1"
-                data-product-id="{{ product.id }}"
-                ref="cards[]"
-              >
-                {% content_for 'block',
-                  type: '_product-card',
-                  id: 'product-card',
-                  closest.product: product,
-                  product_view_context: 'collection'
-                %}
-              </li>
-            {% endunless %}
-          {% endfor %}
-        {% endcapture %}
-
-        {% render 'product-grid',
-          section: section,
-          children: children,
-          products: combined_products,
-          enable_infinite_scroll: false
-        %}
-      {% else %}
-        {% paginate source_collection.products by products_per_page %}
+      {% paginate collection.products by products_per_page %}
+        {% if show_grid %}
           {% capture children %}
-            {% for product in source_collection.products %}
+            {% for product in collection.products %}
               <li
                 id="{{ section.id }}-{{ product.id }}"
                 class="product-grid__item product-grid__item--{{ forloop.index0 }}"
@@ -155,21 +231,139 @@
           {% render 'product-grid',
             section: section,
             children: children,
-            products: source_collection.products,
+            products: collection.products,
             paginate: paginate,
             enable_infinite_scroll: enable_infinite_scroll
           %}
-        {% endpaginate %}
-      {% endif %}
+        {% endif %}
+
+        {% if desktop_slider or mobile_slider %}
+          {% capture slides %}
+            {% for product in collection.products %}
+              <div class="resource-list__item">
+                {% content_for 'block',
+                  type: '_product-card',
+                  id: 'product-card',
+                  closest.product: product,
+                  product_view_context: 'collection'
+                %}
+              </div>
+              {% unless forloop.last %}
+                <!--@list/split-->
+              {% endunless %}
+            {% endfor %}
+          {% endcapture %}
+          {% assign slides_array = slides | strip | split: '<!--@list/split-->' %}
+        {% endif %}
+      {% endpaginate %}
     </div>
+
+    {% if desktop_slider or mobile_slider %}
+      {% render 'resource-list-styles' %}
+      <div
+        class="
+          resource-list
+          resource-list__carousel
+          main-collection__slider
+          {% unless desktop_slider %}hidden--desktop{% endunless %}
+          {% unless mobile_slider %}hidden--mobile{% endunless %}
+        "
+        style="
+          --resource-list-column-gap-desktop: {{ section.settings.columns_gap_horizontal }}px;
+          --column-count: {{ section.settings.slider_columns }};
+          --column-count-mobile: 1;
+          --mobile-card-size: {{ section.settings.slider_mobile_card_size }};
+        "
+      >
+        {% render 'resource-list-carousel',
+          ref: 'mainCollectionCarousel',
+          slides: slides_array,
+          slide_count: slides_array.size,
+          settings: section.settings,
+          slide_width_max: '450px'
+        %}
+      </div>
+    {% endif %}
   </results-list>
 </collection-component>
 
 {% stylesheet %}
   .main-collection__header {
+    margin-block-end: 16px;
+  }
+
+  .main-collection__picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
     margin-block-end: var(--main-collection-header-gap, 28px);
   }
+
+  .main-collection__pick {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.55em 1.1em;
+    border: 2px solid var(--xtb-ink, currentColor);
+    border-radius: 999px;
+    color: var(--xtb-ink, currentColor);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .main-collection__pick:hover,
+  .main-collection__pick.is-active {
+    background: var(--xtb-ink, #000);
+    color: var(--xtb-cream, #fff);
+  }
+
+  .main-collection :is(.collection-wrapper, .main-collection__slider) {
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+
+  .main-collection.is-switching :is(.collection-wrapper, .main-collection__slider) {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  .main-collection.is-loading .main-collection__pick {
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .main-collection :is(.collection-wrapper, .main-collection__slider) {
+      transition: none;
+    }
+  }
+
+  .main-collection__pick:focus-visible {
+    outline: 2px solid var(--xtb-red, currentColor);
+    outline-offset: 2px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .main-collection--desktop-slider .main-collection-grid {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .main-collection--mobile-carousel .main-collection-grid {
+      display: none;
+    }
+
+    .main-collection--mobile-organic .product-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .main-collection--mobile-organic .product-grid__item:nth-of-type(3n + 1) {
+      grid-column: 1 / -1;
+    }
+  }
 {% endstylesheet %}
+
 
 {% schema %}
 {
@@ -178,34 +372,6 @@
     "templates": ["collection"]
   },
   "settings": [
-    {
-      "type": "select",
-      "id": "product_source",
-      "label": "Products to show",
-      "options": [
-        { "value": "current", "label": "This collection (with filters)" },
-        { "value": "all", "label": "All products" },
-        { "value": "selected", "label": "Specific collections" }
-      ],
-      "default": "current",
-      "info": "Filters only show for \"This collection\". With several specific collections, up to 50 products per collection are shown on one page."
-    },
-    {
-      "type": "collection_list",
-      "id": "collections",
-      "label": "Collections",
-      "visible_if": "{{ section.settings.product_source == 'selected' }}"
-    },
-    {
-      "type": "range",
-      "id": "header_gap",
-      "label": "Space below heading",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 28
-    },
     {
       "type": "select",
       "id": "layout_type",
@@ -218,9 +384,91 @@
         {
           "value": "organic",
           "label": "t:options.editorial"
+        },
+        {
+          "value": "carousel",
+          "label": "Slider"
         }
       ],
       "default": "grid"
+    },
+    {
+      "type": "select",
+      "id": "mobile_layout",
+      "label": "Mobile type",
+      "options": [
+        {
+          "value": "grid",
+          "label": "t:options.grid"
+        },
+        {
+          "value": "organic",
+          "label": "t:options.editorial"
+        },
+        {
+          "value": "carousel",
+          "label": "Slider"
+        }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "range",
+      "id": "slider_columns",
+      "label": "Slider columns",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4,
+      "visible_if": "{{ section.settings.layout_type == 'carousel' }}"
+    },
+    {
+      "type": "select",
+      "id": "slider_mobile_card_size",
+      "label": "Mobile slider cards",
+      "options": [
+        {
+          "value": "80cqw",
+          "label": "t:options.one_number"
+        },
+        {
+          "value": "44cqw",
+          "label": "t:options.two_number"
+        }
+      ],
+      "default": "80cqw",
+      "visible_if": "{{ section.settings.mobile_layout == 'carousel' }}"
+    },
+    {
+      "type": "select",
+      "id": "icons_style",
+      "label": "Slider arrows",
+      "options": [
+        {
+          "value": "arrow",
+          "label": "t:options.arrows"
+        },
+        {
+          "value": "chevron",
+          "label": "t:options.chevrons"
+        },
+        {
+          "value": "none",
+          "label": "t:options.none"
+        }
+      ],
+      "default": "arrow",
+      "visible_if": "{{ section.settings.layout_type == 'carousel' or section.settings.mobile_layout == 'carousel' }}"
+    },
+    {
+      "type": "range",
+      "id": "header_gap",
+      "label": "Space below collection filter",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 28
     },
     {
       "type": "select",
