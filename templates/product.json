@@ -502,20 +502,20 @@
           "name": "t:names.product_card",
           "static": true,
           "settings": {
-            "product_card_gap": 4,
+            "link_to_product": true,
+            "hover_effects": true,
+            "show_quick_add": true,
+            "product_card_gap": 8,
             "background_color": "",
             "border": "none",
             "border_width": 1,
             "border_opacity": 100,
             "border_color": "",
             "border_radius": 0,
-            "padding-block-start": 4,
-            "padding-block-end": 12,
-            "padding-inline-start": 2,
-            "padding-inline-end": 10,
-            "link_to_product": false,
-            "hover_effects": false,
-            "show_quick_add": false
+            "padding-block-start": 0,
+            "padding-block-end": 8,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
           },
           "blocks": {
             "product_card_gallery_DNizbJ": {
@@ -587,7 +587,7 @@
               "name": "t:names.product_buy_buttons",
               "settings": {
                 "stacking": false,
-                "text_color": "{{ settings.color_palette.background }}",
+                "text_color": "",
                 "show_pickup_availability": true,
                 "show_physical_stores": true,
                 "gift_card_form": true,
@@ -645,23 +645,12 @@
                 }
               },
               "block_order": []
-            },
-            "xtb_variant_chooser": {
-              "type": "xtb-variant-chooser",
-              "settings": {
-                "options_to_show": "",
-                "style": "pills",
-                "show_label": true,
-                "hide_unavailable": false
-              },
-              "blocks": {}
             }
           },
           "block_order": [
             "product_card_gallery_DNizbJ",
             "product_title_M7MJkb",
             "price_gLWgA6",
-            "xtb_variant_chooser",
             "buy_buttons_qWDKBE"
           ]
         }
@@ -677,7 +666,7 @@
         "carousel_on_mobile": false,
         "max_products": 4,
         "columns": 4,
-        "mobile_columns": "2",
+        "mobile_columns": "1",
         "columns_gap": 24,
         "rows_gap": 40,
         "icons_style": "arrow",
