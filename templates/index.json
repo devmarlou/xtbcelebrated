@@ -290,6 +290,9 @@
           "name": "t:names.product_card",
           "static": true,
           "settings": {
+            "link_to_product": false,
+            "hover_effects": false,
+            "show_quick_add": false,
             "product_card_gap": 4,
             "background_color": "",
             "border": "none",
@@ -300,10 +303,7 @@
             "padding-block-start": 4,
             "padding-block-end": 12,
             "padding-inline-start": 2,
-            "padding-inline-end": 10,
-            "link_to_product": false,
-            "hover_effects": false,
-            "show_quick_add": false
+            "padding-inline-end": 10
           },
           "blocks": {
             "product_card_gallery_677WP3": {
@@ -330,14 +330,14 @@
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",
-                "type_preset": "paragraph",
+                "type_preset": "h4",
                 "font": "var(--font-heading--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
+                "font_size": "1.5rem",
+                "line_height": "tight",
                 "letter_spacing": "normal",
                 "case": "none",
-                "wrap": "pretty",
-                "text_color": "",
+                "wrap": "nowrap",
+                "text_color": "{{ settings.color_palette.foreground }}",
                 "background": false,
                 "background_color": "#00000026",
                 "corner_radius": 0,
@@ -368,6 +368,16 @@
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "xtb_variant_chooser": {
+              "type": "xtb-variant-chooser",
+              "settings": {
+                "options_to_show": "",
+                "style": "pills",
+                "show_label": true,
+                "hide_unavailable": false
               },
               "blocks": {}
             },
@@ -434,16 +444,6 @@
                 }
               },
               "block_order": []
-            },
-            "xtb_variant_chooser": {
-              "type": "xtb-variant-chooser",
-              "settings": {
-                "options_to_show": "",
-                "style": "pills",
-                "show_label": true,
-                "hide_unavailable": false
-              },
-              "blocks": {}
             }
           },
           "block_order": [
