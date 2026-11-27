@@ -17,6 +17,11 @@
 
   .theme-drawer__dialog {
     --theme-drawer-padding: var(--padding-xl);
+    --theme-drawer-direction: 1;
+    --theme-drawer-open-duration: 0.35s;
+    --theme-drawer-close-duration: 0.25s;
+    --theme-drawer-open-easing: var(--ease-out-quad);
+    --theme-drawer-close-easing: cubic-bezier(0.4, 0, 1, 1);
 
     z-index: calc(var(--layer-sticky) + var(--drawer-stack-order, 0));
     position: fixed;
@@ -46,40 +51,71 @@
 
   /* Safe-area env() values are physical; in RTL the drawer anchors to the left edge */
   [dir='rtl'] .theme-drawer__dialog {
+    --theme-drawer-direction: -1;
+
     padding-inline-end: var(--safe-area-inset-left);
   }
 
   .theme-drawer__dialog--opening {
-    animation: drawer-slide-in var(--animation-speed) var(--animation-timing-fade-in);
+    animation: drawer-slide-in var(--theme-drawer-open-duration) var(--theme-drawer-open-easing);
   }
 
   .theme-drawer__dialog--opening-inline-start {
-    animation: drawer-slide-in-inline-start var(--animation-speed) var(--animation-timing-fade-in);
+    animation: drawer-slide-in-inline-start var(--theme-drawer-open-duration) var(--theme-drawer-open-easing);
   }
 
   .theme-drawer__dialog--closing {
-    animation: drawer-slide-out var(--animation-speed) var(--animation-timing-fade-out) forwards;
+    animation: drawer-slide-out var(--theme-drawer-close-duration) var(--theme-drawer-close-easing) forwards;
   }
 
-  .theme-drawer__dialog-instant {
+  .theme-drawer__dialog--opening::backdrop,
+  .theme-drawer__dialog--opening-inline-start::backdrop {
+    animation: drawer-backdrop-in var(--theme-drawer-open-duration) ease-out;
+  }
+
+  .theme-drawer__dialog--closing::backdrop {
+    animation: drawer-backdrop-out var(--theme-drawer-close-duration) ease-in forwards;
+  }
+
+  .theme-drawer__dialog-instant,
+  .theme-drawer__dialog-instant::backdrop {
     animation: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .theme-drawer__dialog {
+      --theme-drawer-open-duration: 0.01s;
+      --theme-drawer-close-duration: 0.01s;
+    }
   }
 
   @keyframes drawer-slide-in {
     from {
-      inset-inline-end: calc(-1 * var(--theme-drawer-width, var(--sidebar-width)));
+      translate: calc(100% * var(--theme-drawer-direction)) 0;
     }
   }
 
   @keyframes drawer-slide-in-inline-start {
     from {
-      inset-inline-end: calc(var(--theme-drawer-width, var(--sidebar-width)) / 2);
+      translate: calc(-50% * var(--theme-drawer-direction)) 0;
     }
   }
 
   @keyframes drawer-slide-out {
     to {
-      inset-inline-end: calc(-1 * var(--theme-drawer-width, var(--sidebar-width)));
+      translate: calc(100% * var(--theme-drawer-direction)) 0;
+    }
+  }
+
+  @keyframes drawer-backdrop-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes drawer-backdrop-out {
+    to {
+      opacity: 0;
     }
   }
 

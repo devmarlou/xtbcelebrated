@@ -35,6 +35,7 @@ html {
 
 html[scroll-lock] {
   overflow: hidden;
+  scrollbar-gutter: stable;
 }
 
 /* Only lock .page-wrapper where it is the scroll container. Below 990px the document scrolls, and
@@ -42,6 +43,7 @@ html[scroll-lock] {
 @media (min-width: 990px) {
   html[scroll-lock] .page-wrapper {
     overflow: hidden;
+    scrollbar-gutter: stable;
   }
 }
 
