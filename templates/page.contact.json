@@ -22,7 +22,7 @@
         "include_label": "Include",
         "include_text": "<p>Your <strong>order number</strong> (from your confirmation email)</p>",
         "help_label": "We can help with:",
-        "help_list": "<ul><li>Order status and delivery</li><li>Shipping address before dispatch</li><li>Sizes, products and exchanges</li><li>Voucher code problems</li></ul>",
+        "help_list": "<p>Order status and delivery, Shipping address before dispatch, Sizes, products and exchanges, Voucher code problems</p>",
         "reply_label": "Reply time",
         "reply_text": "<p>Business days, usually within <strong>1 business day</strong></p>",
         "padding-block-start": 32,
