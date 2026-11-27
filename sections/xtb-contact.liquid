@@ -1,0 +1,488 @@
+{%- liquid
+  assign heading = section.settings.heading | default: page.title
+  assign email = section.settings.email | strip
+  assign email_href = 'mailto:' | append: email
+  assign email_target = ''
+  if section.settings.open_in_gmail
+    assign email_href = 'https://mail.google.com/mail/u/0/#inbox?compose=new'
+    assign email_target = ' target="_blank" rel="noopener"'
+  endif
+  assign heading_words = heading | split: ' '
+  assign heading_lead_size = heading_words.size | minus: 1
+  assign heading_lead = heading_words | slice: 0, heading_lead_size | join: ' '
+  assign heading_last = heading_words | last
+-%}
+
+<div class="section-background"></div>
+<div
+  class="section section--page-width xtb-contact spacing-style"
+  style="{% render 'spacing-style', settings: section.settings %}"
+>
+  <div class="xtb-contact__panel">
+    <div class="xtb-contact__main">
+      {%- render 'brand-sparkle', class: 'xtb-float xtb-twinkle xtb-contact__spark xtb-contact__spark--1' -%}
+      {%- render 'brand-sparkle', class: 'xtb-float xtb-twinkle xtb-twinkle--delay xtb-contact__spark xtb-contact__spark--2' -%}
+
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="xtb-eyebrow">{% render 'brand-sparkle' %}{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+
+      <h1 class="xtb-contact__heading">
+        {%- if heading_lead != blank -%}
+          {{ heading_lead | escape }}{{ ' ' }}
+        {%- endif -%}
+        <span class="xtb-highlight">
+          {{- heading_last | escape -}}
+          {%- render 'xtb-doodle', name: 'underline' -%}
+        </span>
+      </h1>
+
+      {%- if section.settings.intro != blank -%}
+        <div class="xtb-contact__intro">{{ section.settings.intro }}</div>
+      {%- endif -%}
+
+      {%- if email != blank -%}
+        <div class="xtb-actions xtb-contact__actions">
+          <a class="button" href="{{ email_href }}"{{ email_target }}>
+            <span class="xtb-button-content">
+              {{- section.settings.button_label | default: email | escape -}}
+              {%- render 'brand-sparkle' -%}
+            </span>
+          </a>
+          {%- render 'xtb-doodle', name: 'arrow', class: 'xtb-contact__arrow' -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="xtb-contact__wave" aria-hidden="true"></div>
+
+    <div class="xtb-contact__details">
+      {%- render 'brand-sparkle', class: 'xtb-float xtb-float--ink xtb-twinkle xtb-contact__spark xtb-contact__spark--3' -%}
+      {%- render 'xtb-doodle', name: 'squiggle', class: 'xtb-float xtb-contact__squiggle' -%}
+
+      <dl class="xtb-contact__rows">
+        {%- if email != blank -%}
+          <div class="xtb-contact__row">
+            <dt class="xtb-eyebrow">{% render 'brand-sparkle' %}{{ section.settings.email_label | escape }}</dt>
+            <dd><a class="xtb-contact__email" href="{{ email_href }}"{{ email_target }}>{{ email | escape }}</a></dd>
+          </div>
+        {%- endif -%}
+        {%- if section.settings.include_text != blank -%}
+          <div class="xtb-contact__row">
+            <dt class="xtb-eyebrow">{% render 'brand-sparkle' %}{{ section.settings.include_label | escape }}</dt>
+            <dd class="xtb-contact__rte">{{ section.settings.include_text }}</dd>
+          </div>
+        {%- endif -%}
+        {%- if section.settings.help_list != blank -%}
+          <div class="xtb-contact__row">
+            <dt class="xtb-eyebrow">{% render 'brand-sparkle' %}{{ section.settings.help_label | escape }}</dt>
+            <dd class="xtb-contact__rte xtb-contact__list">{{ section.settings.help_list }}</dd>
+          </div>
+        {%- endif -%}
+        {%- if section.settings.reply_text != blank -%}
+          <div class="xtb-contact__row">
+            <dt class="xtb-eyebrow">{% render 'brand-sparkle' %}{{ section.settings.reply_label | escape }}</dt>
+            <dd class="xtb-contact__rte">{{ section.settings.reply_text }}</dd>
+          </div>
+        {%- endif -%}
+      </dl>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .xtb-contact__panel {
+    --xtb-contact-wave-y: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 120' preserveAspectRatio='none'%3E%3Cpath d='M0 0H32Q60 30 32 60T32 120H0Z'/%3E%3C/svg%3E");
+    --xtb-contact-wave-x: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 56' preserveAspectRatio='none'%3E%3Cpath d='M0 28Q30 52 60 28T120 28V0H0Z'/%3E%3C/svg%3E");
+    --xtb-contact-wave-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 8'%3E%3Cpath d='M0 4c3-4 9-4 12 0s9 4 12 0' fill='none' stroke='black' stroke-width='1.6'/%3E%3C/svg%3E");
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    overflow: hidden;
+    border: var(--xtb-border);
+    border-radius: var(--xtb-radius-lg);
+    background: var(--xtb-cream);
+    color: var(--xtb-ink);
+  }
+
+  @media screen and (min-width: 990px) {
+    .xtb-contact__panel {
+      grid-template-columns: minmax(0, 1fr) 64px minmax(0, 1fr);
+    }
+  }
+
+  .xtb-contact__main {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+    padding: clamp(36px, 6vw, 64px) clamp(24px, 5vw, 56px) 8px;
+    background: var(--xtb-ink);
+    color: var(--xtb-cream);
+  }
+
+  @media screen and (min-width: 990px) {
+    .xtb-contact__main {
+      justify-content: center;
+      padding-inline-end: 16px;
+      padding-block-end: clamp(36px, 6vw, 64px);
+    }
+  }
+
+  .xtb-contact__main > :not(.xtb-float) {
+    position: relative;
+    z-index: 1;
+  }
+
+  .xtb-contact__heading {
+    margin: 0;
+    color: var(--xtb-cream);
+    font-size: clamp(2.5rem, 5.5vw, 4rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+
+  .xtb-contact__intro {
+    max-width: 30rem;
+    font-size: 1.0625rem;
+  }
+
+  .xtb-contact__intro > *,
+  .xtb-contact__rte > * {
+    margin: 0;
+  }
+
+  .xtb-contact__actions {
+    position: relative;
+    margin-top: 10px;
+  }
+
+  .xtb-contact__actions .button {
+    --xtb-btn-shadow-color: var(--xtb-cream);
+  }
+
+  .xtb-contact__arrow {
+    width: 64px;
+    height: auto;
+    rotate: -60deg;
+    translate: 4px -6px;
+  }
+
+  .xtb-contact__wave {
+    height: 56px;
+    background: var(--xtb-ink);
+    -webkit-mask: var(--xtb-contact-wave-x) left top / 120px 100% repeat-x;
+    mask: var(--xtb-contact-wave-x) left top / 120px 100% repeat-x;
+  }
+
+  @media screen and (min-width: 990px) {
+    .xtb-contact__wave {
+      height: auto;
+      -webkit-mask: var(--xtb-contact-wave-y) left top / 100% 120px repeat-y;
+      mask: var(--xtb-contact-wave-y) left top / 100% 120px repeat-y;
+    }
+  }
+
+  .xtb-contact__details {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 24px clamp(24px, 5vw, 56px) clamp(36px, 6vw, 64px);
+  }
+
+  @media screen and (min-width: 990px) {
+    .xtb-contact__details {
+      padding: clamp(36px, 6vw, 64px) clamp(24px, 4vw, 48px) clamp(36px, 6vw, 64px) 24px;
+    }
+  }
+
+  .xtb-contact__rows {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 0;
+  }
+
+  .xtb-contact__row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-block: 20px;
+  }
+
+  .xtb-contact__row:first-child {
+    padding-block-start: 0;
+  }
+
+  .xtb-contact__row:last-child {
+    padding-block-end: 0;
+  }
+
+  .xtb-contact__row + .xtb-contact__row {
+    position: relative;
+  }
+
+  .xtb-contact__row + .xtb-contact__row::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    inset-inline: 0;
+    height: 8px;
+    background: var(--xtb-ink);
+    -webkit-mask: var(--xtb-contact-wave-mask) left center / 24px 8px repeat-x;
+    mask: var(--xtb-contact-wave-mask) left center / 24px 8px repeat-x;
+  }
+
+  .xtb-contact__row dt {
+    font-weight: 700;
+  }
+
+  .xtb-contact__row dd {
+    margin: 0;
+    font-size: 1.0625rem;
+    font-weight: 500;
+    line-height: 1.45;
+  }
+
+  .xtb-contact .xtb-contact__email {
+    color: var(--xtb-ink);
+    font-size: clamp(1.25rem, 2.2vw, 1.625rem);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    text-decoration: underline;
+    text-decoration-color: var(--xtb-red);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 7px;
+    transition: text-decoration-thickness 0.2s var(--xtb-ease), color 0.2s ease;
+  }
+
+  .xtb-contact .xtb-contact__email:is(:hover, :focus-visible) {
+    color: var(--xtb-red);
+  }
+
+  .xtb-contact__rte strong {
+    position: relative;
+    z-index: 0;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .xtb-contact__rte strong::after {
+    content: '';
+    position: absolute;
+    inset-inline: -3%;
+    bottom: -0.2em;
+    height: 0.4em;
+    z-index: -1;
+    background: var(--xtb-red);
+    -webkit-mask: var(--xtb-underline-mask) center / 100% 100% no-repeat;
+    mask: var(--xtb-underline-mask) center / 100% 100% no-repeat;
+  }
+
+  .xtb-contact__list ul {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 4px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .xtb-contact__list li {
+    position: relative;
+    padding-inline-start: 1.6em;
+  }
+
+  .xtb-contact__list li::before {
+    content: '';
+    position: absolute;
+    top: 0.3em;
+    inset-inline-start: 0.1em;
+    width: 0.85em;
+    height: 0.85em;
+    background: var(--xtb-red);
+    -webkit-mask: var(--xtb-sparkle-mask) center / contain no-repeat;
+    mask: var(--xtb-sparkle-mask) center / contain no-repeat;
+  }
+
+  .xtb-contact__spark--1 {
+    top: 28px;
+    right: 10%;
+    font-size: clamp(32px, 4.5vw, 52px);
+  }
+
+  .xtb-contact__spark--2 {
+    color: var(--xtb-cream);
+    top: 92px;
+    right: 22%;
+    font-size: clamp(14px, 1.8vw, 20px);
+  }
+
+  .xtb-contact__spark--3 {
+    top: 22px;
+    right: 24px;
+    font-size: 22px;
+  }
+
+  .xtb-contact__squiggle {
+    right: 28px;
+    bottom: 22px;
+    width: clamp(60px, 7vw, 90px);
+    height: auto;
+  }
+
+  @media screen and (max-width: 989px) {
+    .xtb-contact__spark--2,
+    .xtb-contact__spark--3,
+    .xtb-contact__arrow {
+      display: none;
+    }
+
+    .xtb-contact__spark--1 {
+      top: 20px;
+      right: 20px;
+    }
+
+    .xtb-contact__squiggle {
+      right: 20px;
+      bottom: 16px;
+      width: 56px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "XTB contact",
+  "class": "section-wrapper",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Contact us"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Defaults to the page title. The last word gets the underline.",
+      "default": "Questions about your order?"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Intro",
+      "default": "<p>XTBCelebrated is run by MerchUp, XTB's partner for this programme. We handle the store, your orders and delivery.</p>"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email address",
+      "default": "hello@merchup.com"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_in_gmail",
+      "label": "Open email links in Gmail",
+      "info": "Opens Gmail in a new tab with a new message ready, instead of the default mail app.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "info": "Defaults to the email address.",
+      "default": "Email us"
+    },
+    {
+      "type": "header",
+      "content": "Details"
+    },
+    {
+      "type": "paragraph",
+      "content": "Bold text in the details gets the red underline."
+    },
+    {
+      "type": "text",
+      "id": "email_label",
+      "label": "Email label",
+      "default": "Email"
+    },
+    {
+      "type": "text",
+      "id": "include_label",
+      "label": "Include label",
+      "default": "Include"
+    },
+    {
+      "type": "richtext",
+      "id": "include_text",
+      "label": "Include text",
+      "default": "<p>Your <strong>order number</strong> (from your confirmation email)</p>"
+    },
+    {
+      "type": "text",
+      "id": "help_label",
+      "label": "Help label",
+      "default": "We can help with:"
+    },
+    {
+      "type": "richtext",
+      "id": "help_list",
+      "label": "Help list",
+      "default": "<ul><li>Order status and delivery</li><li>Shipping address before dispatch</li><li>Sizes, products and exchanges</li><li>Voucher code problems</li></ul>"
+    },
+    {
+      "type": "text",
+      "id": "reply_label",
+      "label": "Reply label",
+      "default": "Reply time"
+    },
+    {
+      "type": "richtext",
+      "id": "reply_text",
+      "label": "Reply text",
+      "default": "<p>Business days, usually within <strong>1 business day</strong></p>"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    }
+  ],
+  "presets": [
+    {
+      "name": "XTB contact",
+      "category": "XTBCelebrated"
+    }
+  ]
+}
+{% endschema %}
