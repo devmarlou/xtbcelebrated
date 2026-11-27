@@ -502,7 +502,7 @@
           "name": "t:names.product_card",
           "static": true,
           "settings": {
-            "link_to_product": false,
+            "link_to_product": true,
             "hover_effects": false,
             "show_quick_add": false,
             "product_card_gap": 8,
@@ -514,8 +514,8 @@
             "border_radius": 0,
             "padding-block-start": 0,
             "padding-block-end": 8,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
+            "padding-inline-start": 12,
+            "padding-inline-end": 4
           },
           "blocks": {
             "product_card_gallery_DNizbJ": {
