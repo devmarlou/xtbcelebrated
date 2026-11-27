@@ -40,12 +40,29 @@
       nextYear.setFullYear(nextYear.getFullYear() + 1);
       form.expires.value = nextYear.toISOString().slice(0, 10);
 
+      const button = form.querySelector('.primary');
+      let pending = '';
+
+      form.addEventListener('input', () => {
+        pending = '';
+        button.textContent = 'Create vouchers';
+        message.textContent = '';
+      });
+
       form.addEventListener('submit', (event) => {
         event.preventDefault();
         const data = Object.fromEntries(new FormData(form));
-        if (!confirm(`Create ${data.count} × ${data.value} USD vouchers expiring ${data.expires}?`)) return;
+        const summary = `Create ${data.count} × ${data.value} USD vouchers expiring ${data.expires}?`;
+        if (pending !== summary) {
+          pending = summary;
+          button.textContent = 'Confirm';
+          message.className = '';
+          message.textContent = `${summary}\nClick Confirm to create them.`;
+          return;
+        }
 
-        const button = form.querySelector('.primary');
+        pending = '';
+        button.textContent = 'Create vouchers';
         button.disabled = true;
         message.className = '';
         message.textContent = 'Creating… keep this window open. Codes appear in the Vouchers tab as they are made.';
